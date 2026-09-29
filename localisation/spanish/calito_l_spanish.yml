@@ -62,7 +62,7 @@
 
  # --- Los dos personajes unicos ---
  NAME_Calito_Queen:0 "Sela'vhi T'Neyt"
- calito_queen_desc:0 "Era una nina cuando llegaron las arcas, y desde entonces ha crecido dentro de un mundo de acero mientras los adultos discutian que habia sido la Tierra.\n\nLleva la corona porque nadie mas la lleva, y ya ha aprendido que la diferencia entre una reina y una pasajera es si das ordenes o las pides."
+ calito_queen_desc:0 "Era una nina cuando llegaron las arcas, y desde entonces ha crecido dentro de un mundo de acero mientras los adultos discutian que habia sido la Tierra.\n\nEl Regente se sienta en el trono porque ahi se sienta el Regente. Ella no lleva corona: lleva la agenda, y ha aprendido que la diferencia entre quien manda y quienTripula es si das ordenes o las pides."
  calito_queen_phrase:0 "Cinco cascos. Una voz. La mia."
 
  NAME_Calito_Archivist:0 "Archivera Vethara Il'in"
@@ -95,4 +95,4 @@
  calitotest.1.run.tt:0 "Convierte este imperio en el escenario nomada de las cinco arcas. §YPuede tardar un momento.§!"
  calitotest.1.species:0 "Crear solo la especie asari"
  calitotest.1.species.tt:0 "Crea la especie §YAsari Supervivientes§! (clase HUM, retratos §YAsari§! del DLC Mass Effect Civilizations - Asari). Tu propia especie del imperio no se toca, asi que puedes seguir jugando con lo que seas."
- calitotest.1.leaders.tt:0 "Crea la especie si hace falta, y luego genera la §YReina§! (asari, 19) y la §YArchivera§! (asari, 767, inmortal, investigadora jefe). La Reina se asigna a §Ycouncilor_ruler_imperial§! desde dentro del create_leader, como hace vanilla. §YNota:§! vanilla oculta todos los councilor_ruler_* con §Ypossible = { always = no }§! y no existe ningun efecto §Yset_as_ruler§!, asi que si no toma el trono, mira el log: el juego elige al ruler por su cuenta."
+ calitotest.1.leaders.tt:0 "Crea la especie si hace falta, y luego genera a la §YArconte§! (asari, 19, oficial de nivel III legendaria, se queda con el mando real) y a la §YArchivera§! (asari, 767, inmortal, investigadora jefe). §YNota:§! el §Ytrono no se puede asignar§!: el juego no ofrece ningun efecto para fijar un ruler concreto y todos los cargos de trono llevan possible = { always = no }. Quien se sienta en el trono lo elige el juego; el titulo de Regente de las Cinco Arcas ya se aplica."

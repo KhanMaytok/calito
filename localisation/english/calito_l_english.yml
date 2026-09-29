@@ -62,7 +62,7 @@
 
  # --- Los dos personajes unicos ---
  NAME_Calito_Queen:0 "Sela'vhi T'Neyt"
- calito_queen_desc:0 "She was a child when the arks launched, and she has spent the years since then growing up inside a steel world while the adults argued about what Earth had been.\n\nShe wears the crown because no one else will, and she has already learned that the difference between a queen and a passenger is whether you give orders or ask for them."
+ calito_queen_desc:0 "She was a child when the arks launched, and she has spent the years since then growing up inside a steel world while the adults argued about what Earth had been.\n\nThe Regent sits on the throne because that is where Regents sit. She wears no crown: she wears the agenda, and she has already learned that the difference between the one who commands and the one who crews is whether you give orders or ask for them."
  calito_queen_phrase:0 "Five hulls. One voice. Mine."
 
  NAME_Calito_Archivist:0 "Archivist Vethara Il'in"
@@ -95,4 +95,4 @@
  calitotest.1.run.tt:0 "Convert this empire into the five-ark nomadic scenario. §YThis may take a moment.§!"
  calitotest.1.species:0 "Create Only the Asari Species"
  calitotest.1.species.tt:0 "Creates the §YAsari Survivors§! species (HUM class, §YAsari§! portraits from the Mass Effect Civilizations - Asari DLC). Your empire's own species is left untouched, so you can keep playing as whatever you are."
- calitotest.1.leaders.tt:0 "Creates the species if needed, then spawns the §YQueen§! (asari, 19) and the §YArchivist§! (asari, 767, immortal, chief researcher). The Queen is assigned to §Ycouncilor_ruler_imperial§! from inside create_leader, the way vanilla does it. §YNote:§! vanilla hides every councilor_ruler_* with §Ypossible = { always = no }§! and there is no §Yset_as_ruler§! effect, so if she does not take the throne, check the log - the game picks the ruler itself."
+ calitotest.1.leaders.tt:0 "Creates the species if needed, then spawns the §YArchon§! (asari, 19, legendary official, holds the real power) and the §YArchivist§! (asari, 767, immortal, chief researcher). §YNote:§! the §Ythrone cannot be assigned§! - the game offers no effect to set a specific ruler, and every ruler seat has possible = { always = no }. Whoever sits on the throne is chosen by the game; the Regent of the Five Arks title is already applied."

@@ -36,29 +36,21 @@
 #############################################
 
 # =====================================================================
-# 1. LA REINA
+# 1. LA ARCONTE DE LAS CINCO ARCAS
 # =====================================================================
 calito_create_queen_effect = {
-	# 1) Vaciamos el trono. El juego genera otro ruler, y luego le
-	#    damos el trono a nuestra reina.
-	#
-	# OJO: NO se puede hacer  ruler = { limit = { ... } ... }
-	#   Error: "Invalid scripted effect: limit"
-	# limit solo vale dentro de if/else_if. La comprobacion de que
-	# exista ruler va en el if exterior.
-	if = {
-		limit = {
-			exists = ruler
-		}
-		ruler = {
-			kill_leader = {
-				ruler = yes
-				show_notification = no
-			}
-		}
-	}
-
-	# 2) La reina.
+	# !!! NO LE DAMOS EL TRONO, Y ES A CONSCIENCIA !!!
+	# En 4.5.1 NO existe ningun efecto para fijar un ruler concreto: no hay
+	# set_as_ruler ni make_ruler. El ruler lo elige el juego a partir del
+	# 'ruler_council_position' de la autoridad, y TODOS los
+	# councilor_ruler_* de vanilla declaran 'possible = { always = no }'
+	# precisamente para que el jugador no pueda elegirlo a mano.
+	# Se intento set_council_position = councilor_ruler_imperial y falla:
+	#   Can't assign to Council position that doesn't exist in government
+	# Asi que esta persona es la ARCONTE: la oficial mas poderosa del
+	# imperio, la que de verdad gobierna mientras el Regente putative
+	# ocupa el trono por defecto del juego. Se conserva con sus rasgos.
+	# La Arconte.
 	create_leader = {
 		class = official
 		tier = leader_tier_legendary
@@ -81,9 +73,9 @@ calito_create_queen_effect = {
 			# solo de 'commander':
 			#   leader_trait_heavy_hitter_2  leader_class = { commander }
 			#   leader_trait_dreaded_2       leader_class = { commander }
-			# La Reina es 'official', asi que con ellas salia:
 			#   Unable to add trait for [reason] leader_class_does_not_match
 			# Las de abajo si admiten 'official'.
+			# La Arconte es 'official', asi que con ellas salia:
 			trait = leader_trait_overseer_2
 			trait = leader_trait_legendary_high_king_3
 		}
@@ -115,7 +107,6 @@ calito_create_queen_effect = {
 			# autoridad). Es posible que esta asignacion siga fallando. Si
 			# es asi, la Reina existe y es tu lider oficial mas fuerte,
 			# pero el trono lo ocupara quien el juego elija. Mira el log.
-			set_council_position = councilor_ruler_imperial
 		}
 	}
 }
