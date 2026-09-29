@@ -6,7 +6,6 @@
 #
 # calito.100  -> Ventana inicial: el mundo se acabo, elegimos que clase
 #                de arco somos. Lanza el scenario completo.
-# calito.120  -> Ventana de "hay mas gente en el cosmos": una segunda
 #                tanda de asari se une al imperio.
 #############################################
 
@@ -101,80 +100,10 @@ country_event = {
 		custom_tooltip = calito.110.a.tt
 		hidden_effect = {
 			remove_country_flag = calito_five_arks_pending
-			set_timed_country_flag = {
-				flag = calito_five_arks_asari_offer
-				days = 180
-			}
-		}
-	}
-}
-
-# --- Los asari se unen -----------------------------------------------------
-# Oferta de un segundo tanda de sobrevivientes: no llegan en arcos, llegan
-# en un transporte que los encontro nuestra red de sensores.
-country_event = {
-	id = calito.120
-	title = "calito.120.name"
-	desc = "calito.120.desc"
-	picture = GFX_evt_alien_wildlife
-	show_sound = event_radio_chatter
-	location = root.capital_scope
-
-	is_triggered_only = yes
-
-	trigger = {
-		has_country_flag = calito_five_arks_asari_offer
-		calito_is_ark_fleet_empire = yes
-		NOT = { has_country_flag = calito_five_arks_asari_done }
-	}
-
-	immediate = {
-		remove_country_flag = calito_five_arks_asari_offer
-		set_country_flag = calito_five_arks_asari_done
-	}
-
-	option = {
-		name = calito.120.a
-		custom_tooltip = calito.120.a.tt
-		hidden_effect = {
-			calito_create_asari_species = yes
-
-			# Repartimos la poblacion por los arcos que ya tenemos.
-			# Solo dos arcos de cada tres, para que no queden todos
-			# tapados de asari.
-			every_owned_colony = {
-				limit = { is_planet_class = pc_ark }
-				if = {
-					limit = {
-						OR = {
-							is_capital = yes
-							any_owned_pop_group = { is_same_species = owner_main_species }
-						}
-					}
-					while = {
-						count = 2
-						create_pop_group = {
-							species = event_target:calito_asari_species
-							size = @calito_pop_group_size
-						}
-					}
-				}
-			}
-		}
-		ai_chance = { factor = 5 }
-	}
-
-	option = {
-		name = calito.120.b
-		custom_tooltip = calito.120.b.tt
-		hidden_effect = {
-			# Marcado para que calito.asari_gate no vuelva a ofrecerlo
-			# cada ano. Un "no" es un "no".
-			set_country_flag = calito_five_arks_asari_declined
-		}
-		ai_chance = {
-			modifier = { factor = 3 owner = { is_xenophobe = yes } }
-			modifier = { factor = 0 owner = { is_xenophile = yes } }
+			# Los asari YA vienen a bordo desde el setup: son la
+			# poblacion de los cinco arcos. No hay segunda tanda que
+			# ofrecer, asi que se marca directamente como resuelto.
+			set_country_flag = calito_five_arks_asari_done
 		}
 	}
 }

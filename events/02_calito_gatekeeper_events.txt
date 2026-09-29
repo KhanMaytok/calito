@@ -50,7 +50,7 @@ country_event = {
 # Si no hay bandera terminal (ni initialised ni aborted), es que la
 # ventana nunca se vio o se cerro sin decidir. Se vuelve a ofrecer.
 country_event = {
-	id = calito.asari_gate
+	id = calito.reoffer_gate
 	hide_window = yes
 	is_triggered_only = yes
 
@@ -70,27 +70,5 @@ country_event = {
 			days = 365
 		}
 		country_event = { id = calito.100 days = 30 }
-	}
-}
-
-# --- Paso 3: la oferta de asari, un ano despues del setup ---
-country_event = {
-	id = calito.asari_yearly
-	hide_window = yes
-	is_triggered_only = yes
-
-	trigger = {
-		exists = owner
-		is_country_type = default
-		NOT = { is_ai = yes }
-		has_country_flag = calito_five_arks_asari_offer
-		calito_is_ark_fleet_empire = yes
-		NOT = { has_country_flag = calito_five_arks_asari_done }
-		NOT = { has_country_flag = calito_five_arks_asari_declined }
-	}
-
-	immediate = {
-		remove_country_flag = calito_five_arks_cooldown
-		country_event = { id = calito.120 }
 	}
 }

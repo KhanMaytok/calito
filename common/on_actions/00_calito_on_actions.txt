@@ -7,7 +7,7 @@
 # entradas a las suyas, no las quita. Eso es justo lo que queremos:
 #
 #   on_game_start_country -> + calito.gatekeeper.1   (abre la ventana)
-#   on_yearly_pulse_country -> + calito.asari_gate  (ofrece los asari)
+#   on_yearly_pulse_country -> + calito.reoffer_gate  (re-ofrece calito.100)
 #
 # Calico no depende de estos eventos para el modo depuracion: los
 # eventos de consola de 00_calito_test_events.txt funcionan igual.
@@ -28,7 +28,6 @@ on_game_start_country = {
 #   Solo se dispara uno de los dos: cada uno exige el otro estado.
 on_yearly_pulse_country = {
 	events = {
-		calito.asari_gate
-		calito.asari_yearly
+		calito.reoffer_gate
 	}
 }

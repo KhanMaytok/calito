@@ -13,11 +13,6 @@
 @calito_pops_per_ark_military = 1200
 @calito_pops_per_ark_civilian = 1600
 
-# --- Poblacion asari ---
-# Los asari vienen a bordo de los satelites.
-@calito_pops_asari_science  = 600
-@calito_pops_asari_military = 900
-@calito_pops_asari_civilian = 1200
 
 # Tamano de cada grupo de poblacion individual.
 # create_pop_group = { size = N } crea un grupo de N pops.
@@ -33,9 +28,7 @@
 @calito_groups_military = 8    # 2000
 @calito_groups_science  = 5    # 1250
 @calito_groups_civilian = 8    # 2000
-# Asari en el arco principal: es el arco capital, asi que la
-# minoria asari es mas numerosa que en los satelites.
-@calito_groups_prime_asari = 4  # 1000
+
 
 # --- Arcos ---
 @calito_ark_count      = 5   # el arco del jugador + 4 satelites

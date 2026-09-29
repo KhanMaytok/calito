@@ -66,11 +66,11 @@ calito/
 
 | Arco | Tipo | Poblacion | Especie | Kitting |
 |---|---|---|---|---|
-| **Genesis** (capital) | el que elige el jugador | 2400 | Arkborn | tier 3 + Mansion Noble |
-| **Ferrum** | military | 1800 | Asari | tier 3 + **Devastator** (arma titanic) |
-| **Argent** | science | 1200 | Asari | tier 3 + Grand Archive + sensores |
+| **Genesis** (capital) | el que elige el jugador | 2500 | Asari | tier 3 + Mansion Noble |
+| **Ferrum** | military | 2000 | Asari | tier 3 + **Devastator** (arma titanic) |
+| **Argent** | science | 1250 | Asari | tier 3 + sensores |
 | **Cinis** | civilian | 2000 | Asari | tier 3 + economia |
-| **Vigil** | science | 1200 | Arkborn | tier 3 + sensores |
+| **Vigil** | science | 1250 | Asari | tier 3 + sensores |
 
 Todas se suben a **tier 3** y se kitean. Si el jugador elige militar en
 `calito.100`, habrá dos arcos militares; es intencional, para que la
@@ -94,15 +94,15 @@ on_game_start_country
    -> calito.gatekeeper        (oculto, programa 30 dias + cooldown de 20 anos)
       -> calito.100            (VENTANA: elegir tipo de arco, o cancelar)
          -> calito.five_arks_setup_effect
-         -> calito.110         (confirmacion, programa oferta asari a 180 dias)
+            -> calito.110         (confirmacion; marca asari_done)
 
 on_yearly_pulse_country
-   -> calito.asari_gate        (oculto, comprueba el flag de la oferta)
-      -> calito.120            (VENTANA: aceptar o rechazar los asari)
+      -> calito.reoffer_gate    (oculto, re-ofrece calito.100 si no se eligio)
 ```
 
 Un "no" en `calito.100` pone `calito_five_arks_aborted` y no vuelve a aparecer.
-Un "no" en `calito.120` pone `calito_five_arks_asari_declined` y no se repite.
+La oferta de asari a 180 dias se ELIMINO: los asari son la UNICA especie nueva
+y ya vienen a bordo en el setup, asi que no hay segunda tanda que ofrecer.
 
 ---
 
@@ -167,15 +167,20 @@ Si quieres saltar al escenario sin jugar la ventana:
 
 | Mod | Workshop ID | Para que |
 |---|---|---|
-| **Mass Effect Civilizations - Asari** | `790903721` | Retratos `mec_asari`, name list `mec_asari_names`, rasgo `mec_biotics_trait_biotic` |
+| **Mass Effect Civilizations - Asari** | `790903721` | **Imprescindible.** Retrato `mec_asari` y name list `mec_asari_names`. **No** se usa ningun rasgo suyo |
 | **Gigastructural Engineering & More** | `1121692237` | Solo para `calito_spawn` heredado. El escenario "5 Arks" **no** lo necesita |
-| **Nomads (DLC de pago)** | — | Imprescindible: arkships, `is_nomadic`, `pc_ark` |
+| **Nomads (DLC de pago)** | - | Imprescindible: arkships, `is_nomadic`, `pc_ark` |
 
-El escenario "5 Arks" funciona **sin el mod Asari**: `calito_create_asari_species`
-comprueba si el pais ya tiene una especie asari y, si no, intenta crearla.
-Si el mod Asari no esta, `create_species` con `portrait = mec_asari` falla
-en silencio y el pais se queda sin esa especie, pero el resto del escenario
-(solo humanos) sigue bien.
+El escenario "5 Arks" crea **una sola especie, la asari**, y por eso el mod
+Asari paso de ser opcional a ser obligatorio: sin el, `portrait = mec_asari`
+no existe y `create_species` falla. El imperio conserva su propia especie,
+asi que el jugador sigue jugando con la que quiera.
+
+**Por que no se usa `mec_biotics_trait_biotic`:** arrastra
+`resources = { category = planet_mec_biotics  inline_script = "traits/mec_biotics_resources_augment" }`.
+Si esa categoria o ese inline_script no resuelven, `create_species` **aborta
+entero**: no crea la especie y no aparece ni un pop. El retrato viene del
+`portrait_set`, no de un rasgo, asi que los rasgos van todos vanilla.
 
 ---
 
@@ -338,18 +343,31 @@ El trigger para comparar retrato es **`species_portrait`**, no `portrait`:
 any_owned_species = { species_portrait = mec_asari }
 ```
 
-### 6.10 No uses `mec_asari_trait_core`
+### 6.10 No uses NINGUN rasgo del mod Asari
 
-Ese rasgo (el "Amaranthine" del mod Asari):
-- fuerza a **todos** los sexos a hembra, cada vez que se completa una
-  modificacion genetica,
-- impone `mec_asari_leader_trait_cycle` a cada lider de la especie,
-- se opone a `trait_venerable` y `trait_enduring` (justo los rasgos de
-  supervivencia que quieres),
-- no se puede quitar nunca (`species_possible_remove = { always = no }`).
+Ni `mec_asari_trait_core` (el "Amaranthine"), ni `mec_biotics_trait_biotic`.
+La especie se crea con rasgos **vanilla** y nada mas.
 
-Usa `mec_biotics_trait_biotic`, que es el unico rasgo biotics **genetico**
-(`can_add_genetic_traits = yes`) y por tanto sobrevive al genemodding.
+`mec_asari_trait_core` esta descartado porque ademas de forzar todos los sexos
+a hembra e imponer `mec_asari_leader_trait_cycle` a cada lider, se opone a
+`trait_venerable` / `trait_enduring` y no se puede quitar nunca
+(`species_possible_remove = { always = no }`).
+
+`mec_biotics_trait_biotic` esta descartado por un motivo mas grave: arrastra
+
+```txt
+resources = {
+	category = planet_mec_biotics
+	inline_script = "traits/mec_biotics_resources_augment"
+}
+```
+
+Si esa categoria o ese `inline_script` no resuelven, **`create_species` aborta
+entero**: no crea la especie y no aparece ni un pop, sin error visible.
+
+El retrato **no depende de ningun rasgo**: viene del `portrait_set`
+(`portrait = mec_asari` con `class = HUM`). Los rasgos son solo
+cosmeticos/gameplay, asi que perderlos no cuesta nada.
 
 ### 6.11 Sintaxis que NO existe en 4.5.1
 
@@ -555,11 +573,11 @@ Para arreglarlo hay dos caminos, ninguno trivial:
 
 - **Prefijo `calito_` en todo**: eventos, efectos, triggers, flags, especies.
 - **Nombres de script en `lowercase_snake_case`.** Los ids de eventos
-  usan el namespace: `calito.100`, `calito.test.1`.
+   usan el namespace: `calito.100`, `calitotest.1`.
 - **Flags de pais con prefijo `calito_`**: `calito_five_arks_initialised`,
   `calito_five_arks_pending`, `calito_five_arks_asari_offer`,
   `calito_five_arks_asari_done`, `calito_five_arks_aborted`.
-- **Flags de especie**: `calito_arkborn`. Se usa para saber que especies
+   - **Flags de especie**: `calito_asari_arkborn`. Marca la especie que creo este mod.
   creo este mod.
 - **Constantes de balance en `common/script_values/`** con prefijo
   `@calito_`. No pongas numeros magicos en los efectos.
@@ -627,12 +645,14 @@ calito_convert_planet_to_ark_effect = { PLANET ARK_TYPE }
 calito_kill_homeworld_effect = { PLANET }
     pc_nuked + devastation 100 + se lleva a la gente + borra distritos.
 
-calito_create_arkborn_species = yes
-    Especie humana superviviente (HUM, retrato human, HUMAN1, trait_survivor).
-
-calito_create_asari_species = yes
-    Especie asari (HUM, retrato mec_asari, mec_asari_names,
-    mec_biotics_trait_biotic). Reutiliza la del jugador si ya tiene una.
+   calito_create_asari_species = yes
+       UNICA especie que crea el mod: asari (HUM, retrato mec_asari,
+       mec_asari_names, trait_survivor). Reutiliza la del jugador si ya
+       tiene una especie asari. SIN rasgos del DLC Asari: si el
+       inline_script de planet_mec_biotics no resuelve, create_species
+       aborta entero y no aparece ni un pop.
+       El imperio conserva SU propia especie: el scenario no impone la
+       biologia del jugador, solo la de las arcas.
 ```
 
 Scopes de evento (`events/01_calito_five_arks_events.txt`):

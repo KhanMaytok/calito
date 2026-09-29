@@ -24,9 +24,6 @@
  calitotest.9.desc:0 "Evento de depuracion: devuelve el imperio a un estado asentado y no nomada."
 
  # --- Especies ---
- NAME_Calito_Arkborn:0 "Nacidos del Arco"
- NAME_Calito_Arkborn_plural:0 "Nacidos del Arco"
- ADJ_Calito_Arkborn:0 "Nacido del Arco"
 
  NAME_Calito_Asari_Arkborn:0 "Asari Superviviente"
  NAME_Calito_Asari_Arkborn_plural:0 "Asari Supervivientes"
@@ -45,7 +42,7 @@
  calito.100.desc:0 "Las transmisiones se cortaron hace once anos. Habiamos supuesto lo peor sobre la Tierra; ahora sabemos que fue el mejor resultado posible.\n\nCinco arcas escaparon de la atmosfera superior antes de que el incendio consumiera la corteza. Cinco. El nuestro es el unico que sigue emitiendo, y la unica razon por la que seguimos vivos es que un metalurgo llamado Osei Vance se nego a lanzar las balsas sin capacidad industrial para construir mas.\n\nTenemos un casco, un reactor y la totalidad del conocimiento acumulado de la civilizacion humana. Las otras cuatro arcas estan apagadas en nuestras cartas. Ahi fuera, si es que sobrevivieron, estan las unicas otras personas que podran entender lo que perdimos.\n\nHemos decidido volar."
 
  calito.100.a:0 "Somos un pueblo de constructores. Haz de este casco una ciudad."
- calito.100.a.tt:0 "Convierte este imperio en una flota nomada de arcas.\n\n§YNuestro arco pasa a ser la capital.§!\nSe recuperan las otras cuatro arcas y se pueblan con supervivientes.\nDos especies nuevas se unen: los §YNacidos del Arco§! (humanos) y un grupo de §YAsari§! que ya venia a bordo.\nObtenemos el origen §Y[Cinco Arcas]§!."
+ calito.100.a.tt:0 "Convierte este imperio en una flota nomada de arcas.\n\n§YNuestro arco pasa a ser la capital.§!\nSe recuperan las otras cuatro arcas. Van tripuladas por los §Yasari§! que encontramos durmiendo en sus cascos: una sola especie nueva se une a nosotros, y el imperio conserva la suya.\nObtenemos el origen §Y[Cinco Arcas]§!."
  calito.100.b:0 "Somos un pueblo de soldados. Haz de este casco una fortaleza."
  calito.100.b.tt:0 "Igual que la opcion civil, pero nuestro arco es un arco §Militar§!: menos supervivientes a bordo, pero construido para la guerra."
  calito.100.c:0 "Somos un pueblo de eruditos. Haz de este casco un laboratorio."
@@ -58,12 +55,6 @@
  calito.110.a:0 "Entonces empecemos a construir."
  calito.110.a.tt:0 "La flota de arcas queda establecida. Empezaremos a buscar las otras cuatro dentro de seis meses."
 
- calito.120.name:0 "Voces en una Frecuencia Muerta"
- calito.120.desc:0 "Los sensores de largo alcance captaron una transmision estructurada desde un pecio que dabiamos dado por perdido: un arco colonia, con su propulsion fria hace mucho, pero su soporte vital aun ciclando con energia residual. Hay vida a bordo. Miles de ellos.\n\nNo son humanos. Sus escaneos biologicos muestran una poblacion enteramente femenina de un violeta arcanico, y su transmision lleva un saludo para el que no tenemos contexto cultural — pero termina, de forma inequivoca, con una peticion de asilo.\n\nNuestros cascos no son grandes. Pero tampoco estan llenos."
- calito.120.a:0 "Abrid las esclusas. Todos tienen su parte."
- calito.120.a.tt:0 "Acepta a los asari supervivientes. Se reparten por nuestros arcas como una nueva especie."
- calito.120.b:0 "No nos sobra nada. Silencia el canal."
- calito.120.b.tt:0 "Rechazar. El arco asari queda a la deriva."
 
  # --- Titulos de la monarquia ---
  RT_CALITO_QUEEN:0 "Regente de las Cinco Arcas"
@@ -94,14 +85,14 @@
  calito_councilor_ark_research:0 "Archivera del Arco"
  calito_councilor_ark_research_desc:0 "Un asiento en el consejo para quien guarde la memoria de la flota."
  # --- Menu de depuracion de calitotest.1 ---
- calitotest.1.desc.settled:0 "Este imperio todavia esta asentado. Pulsar §YEjecutar escenario completo§! lo convertira en una flota nomada de cinco arcas:\n\n§Y-§! Pasa a imperio nomada con el origen §YCinco Arcas§!\n§Y-§! Instala una monarquia absolutista (Emperatriz)\n§Y-§! Crea dos especies: §YNacidos del Arco§! (humanos) y §YAsari Supervivientes§!\n§Y-§! Convierte tu planeta inicial en el arco capital; la Tierra queda muerta\n§Y-§! Crea 4 arcos satelite, todos subidos a §Ytier 3§! con modulos de late game\n§Y-§! Genera la §YReina§! (19) y la §YArchivera§! (767, investigadora jefe)\n\nNecesita el DLC §YNomads§!."
- calitotest.1.desc.nomadic:0 "Este imperio §Yya es nomada§!. Reejecutar el escenario es seguro: el reset de abajo deshace la ejecucion anterior, pero §Ylos arcos ya creados NO se borran§! (recarga la partida para una prueba de verdad).\n\n§Y-§! Crea dos especies: §YNacidos del Arco§! y §YAsari Supervivientes§!\n§Y-§! Instala una monarquia absolutista (Emperatriz)\n§Y-§! Crea 4 arcos satelite, todos a §Ytier 3§!\n§Y-§! Genera la §YReina§! (19) y la §YArchivera§! (767, investigadora jefe)\n\nNecesita el DLC §YNomads§!."
+ calitotest.1.desc.settled:0 "Este imperio todavia esta asentado. Pulsar §YEjecutar escenario completo§! lo convertira en una flota nomada de cinco arcas:\n\n§Y-§! Pasa a imperio nomada con el origen §YCinco Arcas§!\n§Y-§! Instala una monarquia absolutista (Emperatriz)\n§Y-§! Crea UNA sola especie nueva: los §YAsari§! (retratos asari del DLC). §YTu propia especie del imperio no se toca§!\n§Y-§! Convierte tu planeta inicial en el arco capital; la Tierra queda muerta\n§Y-§! Crea 4 arcos satelite, todos tripulados de asari y todos a §Ytier 3§!\n§Y-§! Genera la §YReina§! (19) y la §YArchivera§! (767, investigadora jefe)\n\nNecesita los DLC §YNomads§! y §YAsari§!."
+ calitotest.1.desc.nomadic:0 "Este imperio §Yya es nomada§!. Reejecutar el escenario es seguro: el reset de abajo deshace la ejecucion anterior, pero §Ylos arcos ya creados NO se borran§! (recarga la partida para una prueba de verdad).\n\n§Y-§! Crea UNA sola especie nueva: los §YAsari§! (retratos asari del DLC). §YTu propia especie del imperio no se toca§!\n§Y-§! Instala una monarquia absolutista (Emperatriz)\n§Y-§! Crea 4 arcos satelite, todos tripulados de asari y todos a §Ytier 3§!\n§Y-§! Genera la §YReina§! (19) y la §YArchivera§! (767, investigadora jefe)\n\nNecesita los DLC §YNomads§! y §YAsari§!."
  calitotest.1.run:0 "Ejecutar escenario completo"
- calitotest.1.run.tt:0 "Convierte este imperio en el escenario nomada de las cinco arcas. §YPuede tardar un momento.§!"
- calitotest.1.species:0 "Crear solo las dos especies"
- calitotest.1.species.tt:0 "Crea §YNacidos del Arco§! y §YAsari Supervivientes§! sin tocar nada mas. Util para comprobar la especie y los retratos asari."
  calitotest.1.gov:0 "Instalar solo la monarquia absolutista"
  calitotest.1.gov.tt:0 "Cambia este imperio a §Yauth_oligarchic§! (la unica autoridad imperial, la unica con herederos) mas eticas militaristas, que selecciona §Ygov_star_empire§! (Emperador/Emperatriz)."
  calitotest.1.leaders:0 "Generar solo los dos lideres"
- calitotest.1.leaders.tt:0 "Crea las especies si hacen falta, y luego genera la §YReina§! (asari, 19, toma el trono) y la §YArchivera§! (asari, 767, inmortal, investigadora jefe). §YNota:§! si la reina no aparece como soberana, el paso §Yset_council_position = councilor_ruler_oligarchic§! es el sospechoso."
  calitotest.1.cancel:0 "Cerrar sin hacer nada"
+ calitotest.1.run.tt:0 "Convierte este imperio en el escenario nomada de las cinco arcas. §YPuede tardar un momento.§!"
+ calitotest.1.species:0 "Crear solo la especie asari"
+ calitotest.1.species.tt:0 "Crea la especie §YAsari Supervivientes§! (clase HUM, retratos §YAsari§! del DLC Mass Effect Civilizations - Asari). Tu propia especie del imperio no se toca, asi que puedes seguir jugando con lo que seas."
+ calitotest.1.leaders.tt:0 "Crea la especie si hace falta, y luego genera la §YReina§! (asari, 19, toma el trono) y la §YArchivera§! (asari, 767, inmortal, investigadora jefe). §YNota:§! si la reina no aparece como soberana, el paso §Yset_council_position = councilor_ruler_oligarchic§! es el sospechoso."

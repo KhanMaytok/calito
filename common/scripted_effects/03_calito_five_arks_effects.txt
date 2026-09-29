@@ -52,8 +52,9 @@ calito_five_arks_setup_effect = {
 	# Sin esto, random_existing_design no encuentra nada.
 	refresh_auto_generated_ship_designs = yes
 
-	# --- 3. Especies (los Leaders las necesitan) ---
-	calito_create_arkborn_species = yes
+	# --- 3. Especie (los Leaders la necesitan) ---
+	# UNA SOLA ESPECIE: los asari. El imperio conserva su propia
+	# especie; solo las arcas van tripuladas de asari.
 	calito_create_asari_species = yes
 
 	# --- 4. Gobierno: monarquia absolutista ---
@@ -83,17 +84,11 @@ calito_five_arks_setup_effect = {
 	# Contenido del arco principal
 	event_target:calito_new_ark = {
 		colony = {
-			# El arco principal lleva LAS DOS especies: los Arkborn
-			# (mayoria, son los humanos que zarparon de la Tierra) y
-			# los Asari (minoria substantial). El retrato asari viene
+			# El arco principal va tripulado de asari. El retrato viene
 			# del portrait_set 'mec_asari' del DLC Asari, que el motor
 			# reutiliza tal cual porque es un GFX global.
 			calito_populate_ark_effect = {
 				GROUPS = @calito_groups_prime
-				SPECIES = event_target:calito_arkborn_species
-			}
-			calito_populate_ark_effect = {
-				GROUPS = @calito_groups_prime_asari
 				SPECIES = event_target:calito_asari_species
 			}
 			set_planet_size = 12
@@ -185,7 +180,7 @@ calito_five_arks_setup_effect = {
 		LOCATION = event_target:calito_home_system
 		DISTANCE = @calito_satellite_distance
 		GROUPS = @calito_groups_science
-		SPECIES = event_target:calito_arkborn_species
+				SPECIES = event_target:calito_asari_species
 		ARK_NAME = "NAME_Calito_Ark_Vigil"
 	}
 

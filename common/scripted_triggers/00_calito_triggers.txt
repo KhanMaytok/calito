@@ -50,13 +50,14 @@ calito_has_asari_species = {
 	}
 }
 
-# Especies creadas por este mod (marcadas con el flag calito_arkborn).
-calito_has_arkborn_species = {
+# Especie creada por este mod (flag calito_asari_arkborn). Distinta de
+# calito_has_asari_species: esa tambien da true si el jugador ya traia
+# una especie asari del DLC.
+calito_has_calito_asari_species = {
 	any_owned_species = {
-		has_species_flag = calito_arkborn
+		has_species_flag = calito_asari_arkborn
 	}
 }
-
 # El pais tiene alguna colonia que NO es un arco.
 # Util para cuando quieras convertir la Tierra en cenizas y quedarte
 # solo con los arks.

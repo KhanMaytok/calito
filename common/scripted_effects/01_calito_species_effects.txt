@@ -1,75 +1,53 @@
 #############################################
 # CALITO - Especies del scenario "5 Arks"
 #
-# Dos especies:
-#   - Arkborn : humanos supervivientes de la Tierra
-#   - Asari   : pobles con los retratos del mod Asari (790903721)
+# UNA SOLA ESPECIE: los asari.
 #
-# NOTA sobre portrait:
-#   El mod Asari define la clase MECASA, pero registra su portrait_group
-#   "mec_asari" contra species_class = HUM, NO contra MECASA:
+# Por que NO creamos tambien una especie humana: para que quien use el
+# mod pueda jugar con SU propia especie (humana, machine, o la que sea).
+# El scenario no impone la biologia del imperio, solo el de las arcas.
+#
+# NOTA sobre portrait (esto es lo que hace que funcione):
+#   El mod Asari (790903721) registra su portrait_group "mec_asari"
+#   contra species_class = HUM, NO contra su clase MECASA:
 #       common/portrait_sets/01_mec_asari_portrait_sets.txt
 #       mec_asari = { species_class = HUM  portraits = { "mec_asari" } }
-#   Por eso usamos class = HUM: es lo que hace el propio mod Asari en
-#   sus paises prescriptados, y es lo que mantiene los retratos
-#   cargando y la compatibilidad con el portrait modding vanilla.
+#   Asi que creamos class = HUM con portrait = mec_asari, que es
+#   exactamente lo que hace el propio mod Asari en sus paises
+#   prescriptados. Los sprites estan en el DLC:
+#       gfx/portraits/portraits/mec_asari_portraits.txt
+#       gfx/models/portraits/mec_asari/   (189 ficheros)
 #   El trigger para COMPARAR un retrato es species_portrait, no portrait.
+#
+# !!! POR QUE NO USAMOS NINGUN RASGO DEL DLC ASARI !!!
+#   mec_biotics_trait_biotic arrastra
+#       resources = { category = planet_mec_biotics
+#                     inline_script = "traits/mec_biotics_resources_augment" }
+#   Si esa categoria o ese inline_script no resuelven, create_species
+#   ABORTA ENTERO: no crea la especie y no aparece ni un pop. Para tener
+#   pops con el retrato asari NO hace falta ningun rasgo: el retrato
+#   viene del portrait_set, y los rasgos son solo cosmeticos/gameplay.
+#   Asi que usamos solo rasgos vanilla, que nunca pueden fallar.
+#
+# !!! EL DLC ASARI AHORA ES OBLIGATORIO !!!
+#   Sin el, 'mec_asari' no existe como retrato y create_species falla.
+#   Esta declarado en descriptor.mod, asi que el launcher avisa.
 #
 # NOTA sobre trait_survivor:
 #   Tiene species_potential_add = { always = no }, asi que NO puede ir
 #   en el bloque traits = { } de create_species. Hay que anadirlo con
 #   change_species_characteristics, igual que hace vanilla para
 #   origin_post_apocalyptic (01_start_of_game_effects.txt:2149).
-#
-# NOTA sobre el rasgo asari:
-#   NO usamos ningun rasgo del DLC Asari. En concreto
-#   mec_biotics_trait_biotic arrastra
-#       resources = { category = planet_mec_biotics
-#                     inline_script = "traits/mec_biotics_resources_augment" }
-#   Si esa categoria o ese inline_script no resuelven, create_species
-#   ABORTA ENTERO: no crea la especie y no aparece ni un pop. Para
-#   tener pops con el retrato asari NO hace falta ningun rasgo: el
-#   retrato viene del portrait_set 'mec_asari' (class = HUM), y los
-#   rasgos son solo cosmeticos/gameplay. Asi que usamos solo rasgos
-#   vanilla, que nunca pueden fallar.
 #############################################
 
-# --- Especie humana superviviente ---
-calito_create_arkborn_species = {
-	create_species = {
-		name = "NAME_Calito_Arkborn"
-		plural = "NAME_Calito_Arkborn_plural"
-		adjective = "ADJ_Calito_Arkborn"
-		class = HUM
-		portrait = human
-		namelist = HUMAN1
-		can_be_modified = yes
-		traits = {
-			trait = trait_organic
-			trait = trait_adaptive
-			trait = trait_charismatic
-			trait = trait_talented
-			trait = trait_very_strong
-		}
-		effect = {
-			set_species_flag = calito_arkborn
-			change_species_characteristics = {
-				add_trait = trait_survivor
-			}
-			save_event_target_as = calito_arkborn_species
-		}
-	}
-}
-
-# --- Especie asari a bordo ---
-# Si el jugador ya tiene una especie asari (por ejemplo, porque juega
-# como Asari Republics con el mod), la reutilizamos en vez de crear otra.
+# --- La especie asari de a bordo ---
+# Si el pais ya tiene una especie con retrato asari (por ejemplo, porque
+# juega como Asari Republics con el DLC), la reutilizamos en vez de
+# crear una segunda. Asi el mod convive bien con el DLC.
 calito_create_asari_species = {
 	if = {
 		limit = {
-			any_owned_species = {
-				species_portrait = mec_asari
-			}
+			calito_has_asari_species = yes
 		}
 		random_owned_species = {
 			limit = {
@@ -86,17 +64,16 @@ calito_create_asari_species = {
 			class = HUM
 			portrait = mec_asari
 			namelist = mec_asari_names
-			gender = female
 			can_be_modified = yes
-		traits = {
-			trait = trait_organic
-			trait = trait_adaptive
-			trait = trait_charismatic
-			trait = trait_intelligent
-			trait = trait_very_strong
-		}
+			traits = {
+				trait = trait_organic
+				trait = trait_adaptive
+				trait = trait_charismatic
+				trait = trait_intelligent
+				trait = trait_very_strong
+			}
 			effect = {
-				set_species_flag = calito_arkborn
+				set_species_flag = calito_asari_arkborn
 				change_species_characteristics = {
 					add_trait = trait_survivor
 				}

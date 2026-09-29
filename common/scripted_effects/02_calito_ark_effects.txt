@@ -192,7 +192,7 @@ calito_populate_ark_effect = {
 	}
 	else = {
 		# Explicito en el log, para no fallar en silencio.
-		log_error = "calito_populate_ark_effect: la especie event_target:calito_arkborn_species / calito_asari_species no existe; el arco se queda sin poblar"
+		log_error = "calito_populate_ark_effect: no existe event_target:calito_asari_species; el arco se queda sin poblar. Comprueba que calito_create_asari_species se haya llamado antes y que el DLC Asari este instalado."
 	}
 }
 

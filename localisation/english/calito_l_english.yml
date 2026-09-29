@@ -24,9 +24,6 @@
  calitotest.9.desc:0 "Debug event: reverts the empire to a settled, non-nomadic state."
 
  # --- Species ---
- NAME_Calito_Arkborn:0 "Arkborn"
- NAME_Calito_Arkborn_plural:0 "Arkborn"
- ADJ_Calito_Arkborn:0 "Arkborn"
 
  NAME_Calito_Asari_Arkborn:0 "Asari Survivor"
  NAME_Calito_Asari_Arkborn_plural:0 "Asari Survivors"
@@ -45,7 +42,7 @@
  calito.100.desc:0 "The transmissions stopped eleven years ago. We had assumed the worst about Earth; now we know it was the best possible outcome.\n\nFive arks cleared the upper atmosphere before the firestorm consumed the crust. Five. Ours is the only one still broadcasting, and the only reason any of us are still alive is that a metallurgist named Osei Vance refused to let the lifeboats launch without the industrial capacity to build more.\n\nWe have a hull, a reactor, and the sum total of human civilisation's accumulated knowledge. The other four arks are dark on our charts. Somewhere out there, if they survived at all, they are the only other people who will ever understand what we lost.\n\nWe have chosen to fly."
 
  calito.100.a:0 "We are a people of builders. Make this hull a city."
- calito.100.a.tt:0 "Convert this empire into a nomadic ark-fleet.\n\n§YOur ark becomes the capital.§!\nThe other four arks are recovered and crewed with survivors.\nTwo new species join us: the §YArkborn§! (human) and a group of §YAsari§! already in the hull.\nWe gain the §Y[Five Arks]§! origin."
+ calito.100.a.tt:0 "Convert this empire into a nomadic ark-fleet.\n\n§YYour ark becomes the capital.§!\nThe other four arks are recovered. They are crewed by the §YAsari§! survivors found sleeping in their hulls - a single new species joins us, and the empire keeps its own.\nWe gain the §Y[Five Arks]§! origin."
  calito.100.b:0 "We are a people of soldiers. Make this hull a fortress."
  calito.100.b.tt:0 "Same as the civilian option, but our ark is a §Ymilitary§! arkship: fewer survivors aboard, but built for war."
  calito.100.c:0 "We are a people of scholars. Make this hull a laboratory."
@@ -58,12 +55,6 @@
  calito.110.a:0 "Then let us start building."
  calito.110.a.tt:0 "The ark-fleet is established. We will begin searching for the other four arks in six months' time."
 
- calito.120.name:0 "Voices on a Dead Frequency"
- calito.120.desc:0 "Long-range sensors picked up a structured transmission from a wreck we had written off: a colony ark, its drive long cold, but its life-support still cycling on residual power. Life aboard. Thousands of them.\n\nThey are not human. Their biosphere scans show an all-female population of an arcan violet, and their transmission carries a greeting we have no cultural context for — but it ends, unmistakably, with a request for shelter.\n\nOur hulls are not large. But they are not full either."
- calito.120.a:0 "Open the airlocks. Everyone gets a share."
- calito.120.a.tt:0 "Accept the Asari survivors. They are distributed across our arks as a new species."
- calito.120.b:0 "We have nothing spare. Silence the channel."
- calito.120.b.tt:0 "Refuse. The Asari ark is left to drift."
 
  # --- Ttitulos de la monarquia ---
  RT_CALITO_QUEEN:0 "Regent of the Five Arks"
@@ -94,14 +85,14 @@
  calito_councilor_ark_research:0 "Ark Archivist"
  calito_councilor_ark_research_desc:0 "A seat on the council for whoever holds the memory of the fleet."
  # --- Menu de depuracion de calitotest.1 ---
- calitotest.1.desc.settled:0 "This empire is still settled. Pressing §YRun Full Scenario§! will convert it into a nomadic fleet of five arks:\n\n§Y-§! Becomes a nomadic empire with the §YFive Arks§! origin\n§Y-§! Installs an absolute monarchy (Empress)\n§Y-§! Creates two species: §YArkborn§! (human) and §YAsari Survivors§!\n§Y-§! Turns your homeworld into the capital ark; Earth is left dead\n§Y-§! Creates 4 satellite arks, all upgraded to §Ytier 3§! with late-game modules\n§Y-§! Spawns the §YQueen§! (19) and the §YArchivist§! (767, chief researcher)\n\nRequires the §YNomads§! DLC."
- calitotest.1.desc.nomadic:0 "This empire is §Yalready nomadic§!. Running the scenario again is safe: the reset below undoes the previous run, but §Yalready-created arks are not deleted§! (reload the save for a truly clean test).\n\n§Y-§! Creates two species: §YArkborn§! (human) and §YAsari Survivors§!\n§Y-§! Installs an absolute monarchy (Empress)\n§Y-§! Creates 4 satellite arks, all upgraded to §Ytier 3§!\n§Y-§! Spawns the §YQueen§! (19) and the §YArchivist§! (767, chief researcher)\n\nRequires the §YNomads§! DLC."
+ calitotest.1.desc.settled:0 "This empire is still settled. Pressing §YRun Full Scenario§! will convert it into a nomadic fleet of five arks:\n\n§Y-§! Becomes a nomadic empire with the §YFive Arks§! origin\n§Y-§! Installs an absolute monarchy (Empress)\n§Y-§! Creates ONE new species: the §YAsari§! (Asari portraits from the DLC). §YYour own empire species is not touched§!\n§Y-§! Turns your homeworld into the capital ark; Earth is left dead\n§Y-§! Creates 4 satellite arks, all crewed with Asari, all upgraded to §Ytier 3§!\n§Y-§! Spawns the §YQueen§! (19) and the §YArchivist§! (767, chief researcher)\n\nRequires the §YNomads§! and §YAsari§! DLCs."
+ calitotest.1.desc.nomadic:0 "This empire is §Yalready nomadic§!. Running the scenario again is safe: the reset below undoes the previous run, but §Yalready-created arks are not deleted§! (reload the save for a truly clean test).\n\n§Y-§! Creates ONE new species: the §YAsari§! (Asari portraits from the DLC). §YYour own empire species is not touched§!\n§Y-§! Installs an absolute monarchy (Empress)\n§Y-§! Creates 4 satellite arks, all crewed with Asari, all upgraded to §Ytier 3§!\n§Y-§! Spawns the §YQueen§! (19) and the §YArchivist§! (767, chief researcher)\n\nRequires the §YNomads§! and §YAsari§! DLCs."
  calitotest.1.run:0 "Run Full Scenario"
- calitotest.1.run.tt:0 "Convert this empire into the five-ark nomadic scenario. §YThis may take a moment.§!"
- calitotest.1.species:0 "Create Only the Two Species"
- calitotest.1.species.tt:0 "Creates §YArkborn§! and §YAsari Survivors§! without touching anything else. Useful for checking the species and the Asari portraits."
  calitotest.1.gov:0 "Install Absolute Monarchy Only"
  calitotest.1.gov.tt:0 "Switches this empire to §Yauth_oligarchic§! (the only imperial authority, the only one with heirs) plus militarist ethics, which selects §Ygov_star_empire§! (Emperor/Empress)."
  calitotest.1.leaders:0 "Spawn Only the Two Leaders"
- calitotest.1.leaders.tt:0 "Creates the species if needed, then spawns the §YQueen§! (asari, 19, takes the throne) and the §YArchivist§! (asari, 767, immortal, chief researcher). §YNote:§! if the Queen does not appear as sovereign, the §Yset_council_position = councilor_ruler_oligarchic§! step is the suspect."
  calitotest.1.cancel:0 "Close Without Doing Anything"
+ calitotest.1.run.tt:0 "Convert this empire into the five-ark nomadic scenario. §YThis may take a moment.§!"
+ calitotest.1.species:0 "Create Only the Asari Species"
+ calitotest.1.species.tt:0 "Creates the §YAsari Survivors§! species (HUM class, §YAsari§! portraits from the Mass Effect Civilizations - Asari DLC). Your empire's own species is left untouched, so you can keep playing as whatever you are."
+ calitotest.1.leaders.tt:0 "Creates the species if needed, then spawns the §YQueen§! (asari, 19, takes the throne) and the §YArchivist§! (asari, 767, immortal, chief researcher). §YNote:§! if the Queen does not appear as sovereign, the §Yset_council_position = councilor_ruler_oligarchic§! step is the suspect."

@@ -116,7 +116,6 @@ country_event = {
 		name = calitotest.1.species
 		custom_tooltip = calitotest.1.species.tt
 		hidden_effect = {
-			calito_create_arkborn_species = yes
 			calito_create_asari_species = yes
 		}
 	}
@@ -135,7 +134,6 @@ country_event = {
 		name = calitotest.1.leaders
 		custom_tooltip = calitotest.1.leaders.tt
 		hidden_effect = {
-			calito_create_arkborn_species = yes
 			calito_create_asari_species = yes
 			calito_create_queen_effect = yes
 			calito_create_chief_scientist_effect = yes
@@ -194,12 +192,6 @@ country_event = {
 			}
 			calito_create_asari_species = yes
 		}
-		# Si tampoco hay especie arkborn, la reusamos como relleno.
-		if = {
-			limit = {
-				NOT = { exists = event_target:calito_arkborn_species }
-			}
-			calito_create_arkborn_species = yes
 		}
 
 		# Sin esto no hay diseno de nave.
@@ -221,7 +213,6 @@ country_event = {
 
 		country_event = { id = calitotest.1done }
 	}
-}
 
 # --- 3. Solo la especie asari ---------------------------------------------
 country_event = {
@@ -270,7 +261,6 @@ country_event = {
 	is_triggered_only = yes
 
 	immediate = {
-		calito_create_arkborn_species = yes
 		country_event = { id = calitotest.1done }
 	}
 }
