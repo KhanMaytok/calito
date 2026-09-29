@@ -107,7 +107,7 @@ calito_create_queen_effect = {
 			# aunque el cargo exista. Asi que se hace aqui, en el scope
 			# que vanilla da por bueno.
 			#
-			# ADVERTENCIA HONESTA: councilor_ruler_oligarchic lleva
+			# ADVERTENCIA HONESTA: councilor_ruler_imperial lleva
 			#     possible = { always = no }
 			# en vanilla, y NO existe ningun efecto de juego que fije un
 			# ruler concreto (no hay set_as_ruler ni make_ruler; el ruler
@@ -115,7 +115,7 @@ calito_create_queen_effect = {
 			# autoridad). Es posible que esta asignacion siga fallando. Si
 			# es asi, la Reina existe y es tu lider oficial mas fuerte,
 			# pero el trono lo ocupara quien el juego elija. Mira el log.
-			set_council_position = councilor_ruler_oligarchic
+			set_council_position = councilor_ruler_imperial
 		}
 	}
 }

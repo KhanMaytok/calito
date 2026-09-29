@@ -58,9 +58,10 @@ calito_five_arks_setup_effect = {
 	calito_create_asari_species = yes
 
 	# --- 4. Gobierno: monarquia absolutista ---
-	# Antes que los personajes, porque el trono es
-	# councilor_ruler_oligarchic y ese cargo solo existe con
-	# auth_oligarchic.
+	# Antes que los personajes, porque el trono es el cargo
+	# councilor_ruler_imperial, que solo existe con auth_imperial (la
+	# unica autoridad con has_heir = yes). OJO: auth_oligarchic NO es
+	# imperial; is_imperial_authority = { has_authority = auth_imperial }.
 	calito_setup_absolute_monarchy_effect = yes
 
 	# --- 5. El arco principal: el planeta inicial, convertido ---

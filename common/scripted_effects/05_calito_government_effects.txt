@@ -1,134 +1,109 @@
 #############################################
 # CALITO - Gobierno: monarquia absolutista
 #
-# COMO FUNCIONA EL GOBIERNO EN 4.5.1:
-#   El juego NO te deja fijar el gobierno directamente. Solo puedes
-#   cambiar la AUTORIDAD y los CIVICS; el gobierno se recalcula
-#   solito tomando el primero de la lista cuyo bloque 'possible' se
-#   cumple (orden de peso: IA > cambio de autoridad > civics > etica >
-#   autoridad > fallback).
+# !!! LA AUTORIDAD IMPERIAL ES 'auth_imperial', NO 'auth_oligarchic' !!!
+# Este fichero antes usaba auth_oligarchic, que es un error. El trigger
+# de vanilla es literally:
+#     common/scripted_triggers/00_scripted_triggers.txt:1822
+#         is_imperial_authority = { has_authority = auth_imperial }
+# Es decir: SOLO auth_imperial cuenta como imperial. Las cuatro
+# autoridades base se diferencian asi:
 #
-#   change_government = {
-#       authority = <auth_*>
-#       civics = random
-#       remove_invalid_civics = yes
-#   }
+#     autoridad            has_heir   ruler_council_position
+#     auth_democratic         no         councilor_ruler_democratic
+#     auth_oligarchic      no         councilor_ruler_oligarchic
+#     auth_dictatorial     no         councilor_ruler_dictatorial
+#     auth_imperial        SI         councilor_ruler_imperial
 #
-#   OJO con los nombres exactos de los efectos de etica y civics:
-#     country_add_ethic     (NO existe "add_ethic")
-#     country_remove_ethic  (NO existe "remove_ethic")
-#     force_add_civic       (NO existe "add_civic")
-#     force_remove_civic
+# Consecuencias de usar la equivocada (auth_oligarchic):
+#   - has_heir = no  ->  SIN DINASTIA, sin herederos, sin Succession
+#   - is_imperial_authority = no  ->  NINGUN gobierno imperial era posible
+#     (gov_star_empire, gov_despotic_empire, gov_despotic_hegemony,
+#      gov_feudal_empire, gov_martial_empire, gov_theocratic_monarchy...)
+#     y el imperio caia en gov_military_junta o gov_executive_committee
+#   - el trono era councilor_ruler_oligarchic, no councilor_ruler_imperial
 #
-# !!! EL ORDEN IMPORTA Y ESTA ERA LA CAUSA DEL TRONO VACIO !!!
-#   change_government RECALCULA el gobierno usando las ETICAS que hay
-#   en ese momento. Antes este efecto hacia change_government PRIMERO
-#   y anadia la etica militarista DESPUES, asi que el gobierno se
-#   recalculaba sin ser militarista y no caia en gov_star_empire.
-#   Ahora: eticas primero, despues change_government.
+# ETICAS QUE BLOQUEAN auth_imperial (00_authorities.txt, bloque possible):
+#     ethic_gestalt_consciousness, ethic_egalitarian,
+#     ethic_fanatic_egalitarian
+# OJO: el fanatico EGUALITARIO no se puede quitar con script, asi que si
+# el jugador lo tiene, esta autoridad no es posible y change_government
+# falla en silencio. Se avisa con log.
 #
-# !!! auth_oligarchic TIENE UN 'possible' QUE LO PUEDE BLOQUEAR !!!
-#   (common/governments/authorities/00_authorities.txt:309)
-#       auth_oligarchic = {
-#           ruler_council_position = councilor_ruler_oligarchic
-#           possible = {
-#               origin  = { NOR = { origin_legendary_leader_dictatorial
-#                                   origin_legendary_leader_imperial } }
-#               ethics  = { NOR = { ethic_gestalt_consciousness
-#                                   ethic_fanatic_egalitarian
-#                                   ethic_fanatic_authoritarian } }   <-- !!
-#           }
-#       }
-#   O sea: un imperio FANATICO AUTORITARIO no puede usar auth_oligarchic
-#   en absoluto, y change_government falla en SILENCIO. Y sin
-#   auth_oligarchic no existe el cargo councilor_ruler_oligarchic, que
-#   es el trono. Por eso la Reina se creaba pero no se sentaba:
-#       Can't assign to Council position that doesn't exist in government
-#   Las eticas FANATICAS no se pueden quitar con script, asi que si el
-#   jugador es fanatico autoritario esto no se puede arreglar: se
-#   avisa con un log claro en vez de fallar en silencio.
+# !!! EL ORDEN IMPORTA !!!
+# change_government RECALCULA el gobierno con las ETICAS que hay en ese
+# momento. Antes se hacia change_government PRIMERO y las eticas
+# DESPUES, asi que no caia en gov_star_empire. Ahora: eticas primero.
 #
-# POR QUE auth_oligarchic + gov_star_empire = "monarquia absolutista":
-#   auth_oligarchic  -> es la autoridad imperial. Es la UNICA que
-#                       cumple is_imperial_authority = yes, y por tanto
-#                       la unica que da herederos (dinastia).
-#   gov_star_empire  -> posible = { is_imperial_authority = yes
-#                                 is_militarist = yes }
-#                       Sus titulos son RT_EMPEROR / RT_EMPRESS, y usa
-#                       nombres regnales + apellidos dinasticos.
+# QUE GOBIERNO SALE: con auth_imperial + materialista + militarista, los
+# candidatos son (de 170 gobiernos de vanilla, estos son los que aceptan
+# is_imperial_authority = yes sin exigir un pais especial):
+#     gov_star_empire        RT_EMPEROR / RT_EMPRESS  (militarista)
+#     gov_despotic_hegemony  RT_OVERLORD               (materialista)
+#     gov_despotic_empire    RT_EMPEROR                (sin requisito)
+# Usamos el civico aristocratic_elite, que no toca eticas, para no
+# Fight el gobierno.
 #
-#   Para caer en gov_star_empire hacen falta LAS DOS condiciones: militar
-#   para el gobierno, y una autoridad imperial para los titulos.
-#
-# ALTERNATIVAS (si prefieres otro sabor de monarquia):
-#   + ethic_spiritualist -> gov_theocratic_monarchy  (RT_ARCHPROPHETESS)
-#   + ethic_pacifist     -> gov_irenic_monarchy      (RT_QUEEN)
+# ALTERNATIVAS de sabor, cambiando solo el gobierno:
+#   + ethic_spiritualist -> gov_theocratic_monarchy  (RT_ARCHPROPHET)
+#   + ethic_pacifist     -> gov_irenic_monarchy      (RT_HIGH_KING)
+#   + civic_technocracy  -> gov_illuminated_autocracy
 #############################################
 
 calito_setup_absolute_monarchy_effect = {
 	# --- 1) ETICAS PRIMERO ---
-	# change_government las lee en cuanto se ejecuta, asi que tienen que
-	# estar listas ANTES del paso 2.
-	#
-	# Ojo: los ETICOS FANATICOS no se pueden quitar. Si el jugador es
-	# fanatico espiritualista, pacifista, igualitario o xenofilo, se
-	# avisa y se deja su etica; el gobierno caera en la monarquia etica
-	# que corresponda. El fanatico AUTORITARIO es el caso grave, porque
-	# ademas impide usar auth_oligarchic (ver cabecera).
+	# change_government las lee en cuanto se ejecuta.
 	if = {
 		limit = {
 			OR = {
-				is_fanatic_spiritualist = yes
-				is_fanatic_pacifist = yes
 				is_fanatic_egalitarian = yes
-				is_fanatic_xenophile = yes
+				has_ethic = ethic_gestalt_consciousness
 			}
 		}
-		log_error = "calito: el imperio tiene un etico FANATICO incompatible con gov_star_empire; el gobierno caera en la monarquia etica que corresponda"
-	}
-	else = {
-		# Eticos no fanaticos: se pueden quitar sin problema.
-		if = {
-			limit = { is_spiritualist = yes }
-			country_remove_ethic = ethic_spiritualist
-		}
-		if = {
-			limit = { is_pacifist = yes }
-			country_remove_ethic = ethic_pacifist
-		}
-		if = {
-			limit = { is_egalitarian = yes }
-			country_remove_ethic = ethic_egalitarian
-		}
-		if = {
-			limit = { is_xenophile = yes }
-			country_remove_ethic = ethic_xenophile
-		}
-		if = {
-			limit = { NOT = { has_ethic = ethic_materialist } }
-			country_add_ethic = ethic_materialist
-		}
-		if = {
-			limit = { NOT = { has_ethic = ethic_militarist } }
-			country_add_ethic = ethic_militarist
-		}
+		log_error = "calito: etico FANATICO IGUALITARIO o conciencia gestalt. auth_imperial NO es posible con ellos, asi que el imperio no tendra dinastia. Cambia la etica a mano y vuelve a ejecutar."
 	}
 
-	# --- 2) Autoridad imperial. Sin esto no hay dinastia ni herederos,
-	#        ni el cargo del trono (councilor_ruler_oligarchic). ---
+	# Eticos no fanaticos: se pueden quitar sin problema.
+	if = {
+		limit = { is_egalitarian = yes }
+		country_remove_ethic = ethic_egalitarian
+	}
+	if = {
+		limit = { is_spiritualist = yes }
+		country_remove_ethic = ethic_spiritualist
+	}
+	if = {
+		limit = { is_pacifist = yes }
+		country_remove_ethic = ethic_pacifist
+	}
+	if = {
+		limit = { is_xenophile = yes }
+		country_remove_ethic = ethic_xenophile
+	}
+	if = {
+		limit = { NOT = { has_ethic = ethic_materialist } }
+		country_add_ethic = ethic_materialist
+	}
+	if = {
+		limit = { NOT = { has_ethic = ethic_militarist } }
+		country_add_ethic = ethic_militarist
+	}
+
+	# --- 2) Autoridad imperial: da herederos (has_heir = yes) y el cargo
+	#        del trono, councilor_ruler_imperial. ---
 	change_government = {
-		authority = auth_oligarchic
+		authority = auth_imperial
 		civics = random
 		remove_invalid_civics = yes
 	}
 
-	# --- 3) Verificacion. change_government falla en silencio si la
+	# --- 3) Verificacion: change_government falla en silencio si la
 	#        autoridad no es posible, asi que lo comprobamos. ---
 	if = {
 		limit = {
-			NOT = { has_authority = auth_oligarchic }
+			NOT = { has_authority = auth_imperial }
 		}
-		log_error = "calito: change_government NO pudo aplicar auth_oligarchic, asi que no hay trono councilor_ruler_oligarchic y la Reina no podra_sentarse. Causa habitual: etico FANATICO AUTORITARIO o FANATICO IGUALITARIO, que bloquean auth_oligarchic."
+		log_error = "calito: change_government NO pudo aplicar auth_imperial. Causa habitual: etico FANATICO IGUALITARIO (no se puede quitar por script) o conciencia gestalt."
 	}
 
 	# --- 4) Titulos propios: el trono no se llama "Emperatriz" de serie. ---
