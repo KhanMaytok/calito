@@ -1,0 +1,88 @@
+#############################################
+# CALITO - Script Values
+#
+# Constantes de balance del escenario "5 Arks".
+# Se referencian con @ desde cualquier efecto o trigger.
+#############################################
+
+# --- Poblacion por arco ---
+# Los arcos empiezan casi vacios: son capsulas de supervivencia, no colonias.
+# 5 arcos * ~1600 = ~8000, la poblacion de un imperio nomada recien
+# Cornavido.
+@calito_pops_per_ark_science  = 900
+@calito_pops_per_ark_military = 1200
+@calito_pops_per_ark_civilian = 1600
+
+# --- Poblacion asari ---
+# Los asari vienen a bordo de los satelites.
+@calito_pops_asari_science  = 600
+@calito_pops_asari_military = 900
+@calito_pops_asari_civilian = 1200
+
+# Tamano de cada grupo de poblacion individual.
+# create_pop_group = { size = N } crea un grupo de N pops.
+@calito_pop_group_size = 250
+
+# NUMERO DE GRUPOS por arco, NO numero de pops.
+# calito_populate_ark_effect usa while = { count = GROUPS }, o sea un
+# tope DURO de iteraciones. Por eso el parametro se llama GROUPS y no
+# POPS: con POPS habia que calcular un ceil, y con 'limit = { pop_amount
+# < POPS }' el bucle se colgaba si la especie no se podia crear.
+# Poblacion final de un arco = GRUPOS * 250.
+@calito_groups_prime    = 10   # 2500 pops
+@calito_groups_military = 8    # 2000
+@calito_groups_science  = 5    # 1250
+@calito_groups_civilian = 8    # 2000
+# Asari en el arco principal: es el arco capital, asi que la
+# minoria asari es mas numerosa que en los satelites.
+@calito_groups_prime_asari = 4  # 1000
+
+# --- Arcos ---
+@calito_ark_count      = 5   # el arco del jugador + 4 satelites
+@calito_satellite_arks = 4   # los "otros 4"
+
+# --- Recursos de arranque ---
+@calito_start_energy    = 1000
+@calito_start_minerals  = 1000
+@calito_start_food      = 500
+@calito_start_alloys    = 500
+@calito_start_influence = 100
+@calito_start_unity     = 500
+
+# Extra de recursos para el evento de "bote completo"
+@calito_bounty_energy    = 3000
+@calito_bounty_minerals  = 3000
+@calito_bounty_food      = 2000
+@calito_bounty_alloys    = 2000
+@calito_bounty_influence = 300
+
+# --- Colocacion de los satelites ---
+# Distancia desde la estrella del sistema de la capital.
+@calito_satellite_distance = 60
+
+# --- Escala de las arcos ---
+# Todas se suben a tier 3 con calito_max_out_*_ark_effect, asi que`n# estas cifras son de POBLACION, no de potencia.
+@calito_ark_pop_prime    = 2400
+@calito_ark_pop_military = 1800
+@calito_ark_pop_science  = 1200
+@calito_ark_pop_civilian = 2000
+
+# --- Buff de la investigadora ---
+# CONTRASTE: el mejor rasgo nativo de leader_trait_maniacal_3 da
+# all_technology_research_speed = 0.10. Esto es 10x eso.
+# Si te parece demasiado, baja 1.00 a 0.50 y ya sigue siendo 5x.
+@calito_research_buff = 1.00
+
+# Opciones de investigacion simultaneas. Vanilla da +1 por rasgo;
+# +8 es generoso pero no rompe el juego.
+@calito_tech_alternatives_buff = 8
+
+# --- Edades de los personajes ---
+# La reina: por debajo de LEADER_LIFESPAN_DEATH_CHANCE_AGE (80) la
+# muerte por edad es 0, asi que 19 es inmortal por edad sola.
+@calito_queen_age = 19
+
+# La investigadora: 767 anos. Con el multiplicador de lifespan del
+# rasgo Voto de Hierro (x3) y set_immortal = yes, no morira nunca.
+@calito_archivist_age = 767
+

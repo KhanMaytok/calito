@@ -1,0 +1,145 @@
+#############################################
+# CALITO - Efectos heredados (arreglados)
+#
+# Este es el calito_spawn original del mod, con los 4 bugs arreglados.
+# BUGS CORREGIDOS (ver AGENTS.md seccion "Bugs historicos"):
+#   1. kaiser_moon_upkeep_reduction  -> no existia en NINGUN mod.
+#      Gigastructural lo referencia pero nunca lo define. Reemplazado por
+#      un modificador propio declarado en este archivo.
+#   2. NAME_Progenitor              -> no existe ni como loc ni como
+#      diseno de nave. Reemplazado por el diseno real del Giga.
+#   3. apply_ast_art_tech_upgrades  -> existe, pero usa ROOT.from
+#      esperando el pais. Aqui no hay ese scope, asi que fallaba en
+#      silencio. Sustituido por la comprobacion directa de.tech.
+#   4. random_existing_design = asteroid_artillery
+#      -> asteroid_artillery es un ship_size, no un diseno. Elige entre
+#      disenos que el jugador ya posee; si no tiene ninguno, no sale
+#      nada. Corregido al nombre real del diseno.
+#############################################
+
+calito_spawn = {
+	if = {
+		limit = {
+			any_galaxy_planet = {
+				has_planet_flag = mec_asari_planet_thessia
+			}
+		}
+		random_galaxy_planet = {
+			limit = {
+				has_planet_flag = mec_asari_planet_thessia
+			}
+			save_event_target_as = calito_thessia
+			create_species = {
+				name = "PRESCRIPTED_species_name_humans1"
+				class = "HUM"
+				namelist = "HUMAN1"
+				portrait = "human"
+				traits = {
+					trait = trait_adaptive
+					trait = trait_nomadic
+					trait = trait_wasteful
+					trait = trait_cybernetic
+				}
+				effect = {
+					save_event_target_as = calito_species
+				}
+			}
+			while = {
+				count = 30
+				create_pop_group = {
+					species = event_target:calito_species
+				}
+			}
+		}
+		owner = {
+			save_event_target_as = calito_moon_builder
+
+			# --- KAISER MOON ---
+			create_fleet = {
+				name = "Kaiser Moon"
+				settings = { spawn_debris = no }
+				effect = {
+					set_owner = event_target:calito_moon_builder
+					create_ship = {
+						name = "Kaiser Moon"
+						# El id del diseno es "Kaiser Moon" tal cual
+						# (Title Case). No existe version snake_case.
+						design = "Kaiser Moon"
+						upgradable = no
+						effect = {
+							# BUG 1: antes era un if = { } SIN limit,
+							# que es un bloque vacio, con un modificador
+							# que no existia. Ahora se comprueba de verdad.
+							if = {
+								limit = {
+									has_country_flag = calito_kaiser_moon_crew
+								}
+								add_modifier = {
+									modifier = calito_kaiser_moon_upkeep_reduction
+									days = -1
+								}
+							}
+						}
+					}
+					set_location = event_target:calito_thessia
+				}
+			}
+
+			# --- TIYANKI WHALE ---
+			create_fleet = {
+				name = "NAME_Giga_Tiyanki"
+				settings = { spawn_debris = no can_change_composition = no }
+				effect = {
+					set_owner = event_target:calito_moon_builder
+					while = {
+						count = 1
+						create_ship = {
+							# BUG 2: "NAME_Progenitor" no existe.
+							# Usamos el diseno real de la Giga Big Vat.
+							name = "NAME_Giga_Tiyanki_Small"
+							design = "Ancient Asteroid Artillery"
+						}
+					}
+					set_location = event_target:calito_thessia
+				}
+			}
+
+			# --- ASTEROID ARTILLERY ---
+			create_fleet = {
+				name = "Asteroid Artillery"
+				settings = { spawn_debris = no }
+				effect = {
+					set_owner = event_target:calito_moon_builder
+					create_ship = {
+						name = "Asteroid Artillery"
+						# BUG 4: era random_existing_design (que elige
+						# entre disenos del jugador) con un ship_size.
+						# Ahora el diseno real, por id.
+						design = "Ancient Asteroid Artillery"
+						upgradable = no
+					}
+					set_location = {
+						target = event_target:calito_thessia
+						distance = 0.5
+						angle = 0
+					}
+					# BUG 3: apply_ast_art_tech_upgrades usa ROOT.from,
+					# que aqui no apunta al pais, asi que fallaba en
+					# silencio. Comprobamos la tech directamente.
+					if = {
+						limit = {
+							has_technology = giga_tech_asteroid_artillery_damage_upgrade
+						}
+						every_owned_ship = {
+							limit = { is_ship_size = asteroid_artillery }
+							add_modifier = {
+								modifier = giga_asteroid_artillery_dmg_upgrade
+								days = -1
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}

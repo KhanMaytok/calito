@@ -1,0 +1,173 @@
+#############################################
+# CALITO - Los dos personajes unicos
+#
+#   1. La Reina       : asari joven, monopoliza el trono.
+#   2. La Investigadora: asari de 767 anos, +(research) brutal.
+#
+# SINTAXIA DE create_leader (4.5.1), parametros que SI existen:
+#   class, sub_type, tier, name, species, gender, set_age,
+#   leader_age_min, leader_age_max, immortal, hide_age, skill,
+#   traits, randomize_traits, event_leader, can_assign_to_council,
+#   can_manually_change_location, skip_background_generation,
+#   background_ethic, background_job, background_planet,
+#   custom_description, custom_catch_phrase, hide_leader, effect
+#
+# Parametros que NO existen (error clasico):
+#   age        -> se usa set_age
+#   portrait   -> se usa change_leader_portrait DENTRO de effect
+#   is_ai      -> no se puede forzar
+#   add_trait  -> solo dentro de effect, no como key directo
+#
+# EDAD: set_age = N, sin tope en el script. Vanilla usa hasta 126872.
+#   Para muerte natural, la tabla es (common/defines/00_defines.txt):
+#     por debajo de 80 anos la muerte por edad es 0
+#     a partir de 80: +0.2% por ano
+#     a partir de 96 (1.2x): +2% por ano
+#   La reina tiene 19: inmortal por edad, pero con immortal = no
+#   para que el juego la trate como mortal si el jugador lo quiere.
+#   La investigadora tiene 767: con el rasgo Voto de Hierro
+#   (leader_lifespan_mult = 3) vive aun mas; ademas la hacemos
+#   inmortal directamente, porque 767 + mortandad natural seria absurdo.
+#
+# RETRATOS ASARI (del mod Asari, 790903721):
+#   mec_asari_1 azul / _2 morado / _3 azul oscuro / _4 morado oscuro
+#   _5 verde-azulado / _6 azul palido
+#   El portrait_group agregado es "mec_asari".
+#############################################
+
+# =====================================================================
+# 1. LA REINA
+# =====================================================================
+calito_create_queen_effect = {
+	# 1) Vaciamos el trono. El juego genera otro ruler, y luego le
+	#    damos el trono a nuestra reina.
+	#
+	# OJO: NO se puede hacer  ruler = { limit = { ... } ... }
+	#   Error: "Invalid scripted effect: limit"
+	# limit solo vale dentro de if/else_if. La comprobacion de que
+	# exista ruler va en el if exterior.
+	if = {
+		limit = {
+			exists = ruler
+		}
+		ruler = {
+			kill_leader = {
+				ruler = yes
+				show_notification = no
+			}
+		}
+	}
+
+	# 2) La reina.
+	create_leader = {
+		class = official
+		tier = leader_tier_legendary
+		species = event_target:calito_asari_species
+		name = "NAME_Calito_Queen"
+		gender = female
+		set_age = 19
+		skill = 6
+		# event_leader = no (por defecto): puede gobernar de verdad,
+		# mejorar relaciones, etc.
+		randomize_traits = no
+		skip_background_generation = yes
+		background_ethic = ethic_authoritarian
+		custom_description = calito_queen_desc
+		custom_catch_phrase = calito_queen_phrase
+		traits = {
+			trait = calito_leader_trait_iron_vow
+			# OJO: la clase de la clave es 'leader_class' (singular), y
+			# cada rasgo de vanilla declara las suyas. Estas dos SON
+			# solo de 'commander':
+			#   leader_trait_heavy_hitter_2  leader_class = { commander }
+			#   leader_trait_dreaded_2       leader_class = { commander }
+			# La Reina es 'official', asi que con ellas salia:
+			#   Unable to add trait for [reason] leader_class_does_not_match
+			# Las de abajo si admiten 'official'.
+			trait = leader_trait_overseer_2
+			trait = leader_trait_legendary_high_king_3
+		}
+		effect = {
+			save_event_target_as = calito_queen
+			change_leader_portrait = mec_asari_1
+			set_skill = 6
+			set_leader_flag = leader_death_events_blocked
+		}
+	}
+
+	# 3) Le damos el trono.
+	#
+	#    El cargo del trono de auth_oligarchic es councilor_ruler_oligarchic
+	#    (00_authorities.txt:319 -> ruler_council_position).
+	#
+	#    !!! NO es un cargo normal: todos los councilor_ruler_* de vanilla
+	#    declaran 'possible = { always = no }'. Eso los esconde del
+	#    jugador, pero el script si puede asignarlos SI el imperio esta
+	#    de verdad en auth_oligarchic. El fallo real era que el imperio no
+	#    lo estaba (change_government habia fallado en silencio) y salia:
+	#        Can't assign to Council position that doesn't exist in government
+	#    Asi que guardamos el caso y dejamos constancia.
+	if = {
+		limit = {
+			has_authority = auth_oligarchic
+		}
+		event_target:calito_queen = {
+			set_council_position = councilor_ruler_oligarchic
+		}
+	}
+	else = {
+		log_error = "calito: el imperio NO esta en auth_oligarchic, asi que no existe el cargo councilor_ruler_oligarchic. La Reina se ha creado pero se queda sin trono. Revisa calito_setup_absolute_monarchy_effect."
+	}
+}
+
+# =====================================================================
+# 2. LA INVESTIGADORA JEFE
+# =====================================================================
+calito_create_chief_scientist_effect = {
+	create_leader = {
+		class = scientist
+		tier = leader_tier_legendary
+		species = event_target:calito_asari_species
+		name = "NAME_Calito_Archivist"
+		gender = female
+		set_age = 767
+		skill = 10
+		randomize_traits = no
+		skip_background_generation = yes
+		background_ethic = ethic_materialist
+		background_job = researcher
+		custom_description = calito_archivist_desc
+		custom_catch_phrase = calito_archivist_phrase
+		traits = {
+			trait = calito_leader_trait_ark_of_mnemosine
+			trait = leader_trait_maniacal_3
+			trait = leader_trait_inquisitive_3
+		}
+		effect = {
+			save_event_target_as = calito_archivist
+			change_leader_portrait = mec_asari_4
+			set_skill = 10
+			# 767 anos: la hacemos inmortal. Sin esto la mortandad
+			# natural (2%/ano desde los 96) se la comeria en unas
+			# cuantas décadas de partida.
+			set_immortal = yes
+			set_leader_flag = leader_death_events_blocked
+		}
+	}
+
+	# La asignamos al cargo de research nomada propio de calito.
+	# Necesita 'is_leader_possible = { leader_class = scientist }' en
+	# 01_calito_councilors.txt; sin ese bloque el cargo existe pero
+	# nadie puede ocuparlo.
+	if = {
+		limit = {
+			is_nomadic = yes
+		}
+		event_target:calito_archivist = {
+			set_council_position = calito_councilor_ark_research
+		}
+	}
+	else = {
+		log_error = "calito: el imperio no es nomada, asi que calito_councilor_ark_research no existe (possible = { is_nomadic = yes }). La Investigadora se queda sin consejo."
+	}
+}

@@ -1,0 +1,21 @@
+#############################################
+# CALITO - Modificadores estaticos
+#
+# NOTA: los modificadores NO van en common/scripted_effects/. Deben
+# declararse aqui (o en common/static_modifiers/ de otro mod) para que
+# add_modifier = { modifier = X } los resuelva.
+#
+# calito_kaiser_moon_upkeep_reduction sustituye a
+# kaiser_moon_upkeep_reduction, que el mod Gigastructural REFERENCIA
+# pero NUNCA DEFINE. Referenciar un modificador inexistente produce un
+# error en logs/error.log y no aplica nada.
+#
+# No existe ningun "upkeep" de nave en el motor (el upkeep es de
+# planeta/building/job), asi que la intencion original ("reducir el
+# mantenimiento") se implementa con reparacion, que si es real.
+#############################################
+
+calito_kaiser_moon_upkeep_reduction = {
+	ship_repair_hull_mult = 0.5
+	ship_repair_armor_mult = 0.5
+}

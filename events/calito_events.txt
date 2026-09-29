@@ -1,0 +1,18 @@
+namespace = calito
+
+# Evento heredado del mod original. NO lo dispara ningun on_action:
+# se conserva solo por compatibilidad, por si algun mod externo lo
+# referencia. Hace exactamente lo mismo que calito.test.5.
+#
+# Para probarlo:  event calito.8005
+# Para probarlo con ventana de depuracion:  event calito.test.5
+country_event = {
+	id = calito.8005
+	hide_window = yes
+	fire_only_once = yes
+	is_triggered_only = yes
+
+	immediate = {
+		calito_spawn = yes
+	}
+}

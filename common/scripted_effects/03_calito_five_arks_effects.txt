@@ -1,0 +1,203 @@
+#############################################
+# CALITO - Efecto orquestador del scenario "5 Arks"
+#
+# Prepara al pais jugador para jugar como imperio nomada post-apocaliptico:
+#   - convierte el imperio en nomada
+#   - aplica el origen calito_origin_five_arks
+#   - instala una monarquia absolutista
+#   - crea las dos especies (humanos supervivientes + asari)
+#   - convierte el planeta inicial en el arco principal
+#   - crea 4 arcos satelite, uno de cada clase y con reparto de poderes
+#   - sube todas las arcos a tier 3 con modulos y edificios de late game
+#   - crea los dos personajes unicos
+#   - siembra todo con poblacion
+#
+# SCOPE: pais. Llamar como  calito_five_arks_setup_effect = { ARK_TYPE = <...> }
+#   ARK_TYPE = civilian_arkship | science_arkship | military_arkship
+#   (el tipo del arco principal, el que elige el jugador)
+#
+# ORDEN CRITICO: las technologies y el refresh_auto_generated_ship_designs
+# TIENEN que ir antes de cualquier create_ship, y las species antes de
+# crear Leaders, porque los Leaders usan event_target:calito_asari_species.
+#############################################
+
+calito_five_arks_setup_effect = {
+	# --- 0. Contexto ---
+	capital_scope = {
+		save_event_target_as = calito_home_system
+	}
+	save_event_target_as = calito_player
+
+	# --- 1. El pais pasa a nomada ---
+	set_country_as_nomad_effect = { IS_NOMAD = yes }
+	set_origin = calito_origin_five_arks
+	set_faction_properties = { needs_border_access = no }
+	set_resource_converter = nomadic_operational_reserves
+	set_variable = { which = contract_completed value = 0 }
+	set_country_flag = calito_five_arks_initialised
+	set_country_flag = embarked_as_settled_empire
+
+	# Situacion nomada de Reservas Operativas + director de eventos
+	# aleatorios de los arcos.
+	country_event = { id = nomads.20 }
+	country_event = { id = arkship.1 random = 1800 }
+
+	# --- 2. Tecnologia ANTES de crear nada ---
+	give_technology = { tech = tech_civilian_arkship message = no }
+	give_technology = { tech = tech_science_arkship   message = no }
+	give_technology = { tech = tech_military_arkship  message = no }
+	give_technology = { tech = tech_waystation_1       message = no }
+	# ...y todo el arbol necesario para el kitting de late game.
+	calito_give_ark_upgrade_techs = yes
+	# Sin esto, random_existing_design no encuentra nada.
+	refresh_auto_generated_ship_designs = yes
+
+	# --- 3. Especies (los Leaders las necesitan) ---
+	calito_create_arkborn_species = yes
+	calito_create_asari_species = yes
+
+	# --- 4. Gobierno: monarquia absolutista ---
+	# Antes que los personajes, porque el trono es
+	# councilor_ruler_oligarchic y ese cargo solo existe con
+	# auth_oligarchic.
+	calito_setup_absolute_monarchy_effect = yes
+
+	# --- 5. El arco principal: el planeta inicial, convertido ---
+	# Guardamos el planeta ANTES de convertirlo, porque despues
+	# capital_scope apunta al arco.
+	event_target:calito_home_system = {
+		random_system_planet = {
+			limit = {
+				is_capital = yes
+				NOT = { is_planet_class = pc_ark }
+			}
+			save_event_target_as = calito_dead_earth
+		}
+	}
+
+	calito_convert_planet_to_ark_effect = {
+		PLANET = event_target:calito_dead_earth
+		ARK_TYPE = $ARK_TYPE$
+	}
+
+	# Contenido del arco principal
+	event_target:calito_new_ark = {
+		colony = {
+			# El arco principal lleva LAS DOS especies: los Arkborn
+			# (mayoria, son los humanos que zarparon de la Tierra) y
+			# los Asari (minoria substantial). El retrato asari viene
+			# del portrait_set 'mec_asari' del DLC Asari, que el motor
+			# reutiliza tal cual porque es un GFX global.
+			calito_populate_ark_effect = {
+				GROUPS = @calito_groups_prime
+				SPECIES = event_target:calito_arkborn_species
+			}
+			calito_populate_ark_effect = {
+				GROUPS = @calito_groups_prime_asari
+				SPECIES = event_target:calito_asari_species
+			}
+			set_planet_size = 12
+			set_capital = yes
+		}
+		# Kitting. Un solo booleano: los parametros condicionales
+		# [[X]] NO se pueden anidar. El tipo de este arco lo eligio el
+		# jugador, pero para no complicarlo usamos el kit civil, que es
+		# el mas equilibrado. Los 4 satelites si llevan su kit propio.
+		calito_max_out_ark_effect = {
+			ARK_TYPE = civilian_arkship
+		}
+		# Mansion Noble: pide la civic aristocratic_elite que anadio
+		# calito_setup_absolute_monarchy_effect.
+		#
+		# OJO: se usa 'starbase = { }', no 'fleet = { starbase? = { } }'.
+		# El segundo es un doble salto de scope que vanilla no usa para
+		# esto y que fallo con:
+		#   Invalid context switch [fleet] from [...] [country]
+		# 'starbase = { }' es lo que hace initialize_arkship_starbase_effect
+		# (nomads_effects.txt:3405), y este bloque corre en scope de nave
+		# porque event_target:calito_new_ark se guardo dentro del
+		# create_ship.
+		starbase = {
+			set_starbase_building = {
+				slot = lower_1
+				building = arkship_noble_estates
+			}
+		}
+		# La postura de la flota SI necesita scope de flota, asi que va
+		# aparte. Desde scope de nave, 'fleet = { }' es valido.
+		fleet = {
+			set_fleet_stance = evasive
+		}
+	}
+
+	# La Tierra muerta
+	if = {
+		limit = { exists = event_target:calito_dead_earth }
+		calito_kill_homeworld_effect = {
+			PLANET = event_target:calito_dead_earth
+		}
+	}
+
+	# --- 6. Los 4 arcos satelite ---
+	# Reparto de los tres tipos entre 4 cuerpos:
+	#   1 militar  (el mas fuerte, el unico con Devastator)
+	#   2 ciencia (los mas grandes en sensores)
+	#   1 civil   (el mas grande en economia y comida)
+	# Si el jugador eligio militar como principal, habrá 2 militares.
+
+	calito_create_ark_effect = {
+		ARK_TYPE = military_arkship
+		IS_MILITARY = yes
+		OWNER = event_target:calito_player
+		LOCATION = event_target:calito_home_system
+		DISTANCE = @calito_satellite_distance
+		GROUPS = @calito_groups_military
+		SPECIES = event_target:calito_asari_species
+		ARK_NAME = "NAME_Calito_Ark_Ferrum"
+	}
+
+	calito_create_ark_effect = {
+		ARK_TYPE = science_arkship
+		IS_SCIENCE = yes
+		OWNER = event_target:calito_player
+		LOCATION = event_target:calito_home_system
+		DISTANCE = @calito_satellite_distance
+		GROUPS = @calito_groups_science
+		SPECIES = event_target:calito_asari_species
+		ARK_NAME = "NAME_Calito_Ark_Argent"
+	}
+
+	calito_create_ark_effect = {
+		ARK_TYPE = civilian_arkship
+		CIVILIAN = yes
+		OWNER = event_target:calito_player
+		LOCATION = event_target:calito_home_system
+		DISTANCE = @calito_satellite_distance
+		GROUPS = @calito_groups_civilian
+		SPECIES = event_target:calito_asari_species
+		ARK_NAME = "NAME_Calito_Ark_Cinis"
+	}
+
+	calito_create_ark_effect = {
+		ARK_TYPE = science_arkship
+		IS_SCIENCE = yes
+		OWNER = event_target:calito_player
+		LOCATION = event_target:calito_home_system
+		DISTANCE = @calito_satellite_distance
+		GROUPS = @calito_groups_science
+		SPECIES = event_target:calito_arkborn_species
+		ARK_NAME = "NAME_Calito_Ark_Vigil"
+	}
+
+	# --- 7. Los dos personajes unicos ---
+	calito_create_queen_effect = yes
+	calito_create_chief_scientist_effect = yes
+
+	# --- 8. Recursos de arranque ---
+	add_resource = { energy = @calito_start_energy }
+	add_resource = { minerals = @calito_start_minerals }
+	add_resource = { food = @calito_start_food }
+	add_resource = { alloys = @calito_start_alloys }
+	add_resource = { influence = @calito_start_influence }
+	add_monthly_resource_mult = { resource = unity value = 10 min = 10 max = 10 }
+}

@@ -1,0 +1,65 @@
+#############################################
+# CALITO - Cargos del consejo unicos
+#
+# Un "councilor" es un cargo del consejo. Vanilla declara el cargo de
+# research nomada en common/governments/councilors/00_councilors.txt:
+#
+#   councilor_research_nomadic = {
+#       leader_class = { scientist }
+#       possible = { is_gestalt = no  is_nomadic = yes }
+#       modifier = { all_technology_research_speed = 0.02 }   # <-- vanilla
+#   }
+#
+# Este mod anade un cargo propio con buff masivo, porque el scenario
+# pide una investigadora jefe con buffs enormes.
+#
+# Asignar a alguien:
+#   leader = { set_council_position = calito_councilor_ark_research }
+#
+# !!! LOS SCRIPT VALUES (@) NO FUNCIONAN AQUI !!!
+#   Este fichero se parsea con "persistent.cpp", que NO resuelve
+#   @script_values. Saldria "Malformed token: @calito_research_buff".
+#   Los numeros van en duro.
+#
+# Declarar el cargo NO lo asigna: hace falta set_council_position.
+#############################################
+
+calito_councilor_ark_research = {
+	leader_class = { scientist }
+
+	possible = {
+		is_gestalt = no
+		is_nomadic = yes
+	}
+
+	# OBLIGATORIO. 'possible' dice si el CARGO existe; 'is_leader_possible'
+	# dice si un lider concreto puede ocuparlo. Vanilla los dos:
+	#   councilor_research_nomadic = {          (00_councilors.txt)
+	#       leader_class = { scientist }
+	#       possible = { is_gestalt = no  is_nomadic = yes }
+	#       is_leader_possible = { leader_class = scientist }
+	#   }
+	# Sin este bloque el cargo existe pero NADIE puede ocuparlo, y al
+	# asignarlo salia:
+	#   Can't assign to Council position that doesn't exist in government
+	is_leader_possible = {
+		leader_class = scientist
+	}
+
+	modifier = {
+		all_technology_research_speed = 1.00
+		num_tech_alternatives_add = 8
+		science_ship_survey_speed = 1.00
+		ship_anomaly_research_speed_mult = 1.00
+		category_archaeostudies_research_speed_mult = 1.00
+		councilor_exp_gain = 0.50
+		planet_technician_energy_produces_add = 0.5
+	}
+
+	# Reutilizamos el icono de research de vanilla.
+	icon = "GFX_icon_councilor_research"
+
+	# Especifico de este scenario: que la IA no lo rellene sola.
+	ai_hiring_weight = { weight = 0 }
+	ai_priority = 0
+}

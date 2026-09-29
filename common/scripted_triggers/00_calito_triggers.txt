@@ -1,0 +1,68 @@
+#############################################
+# CALITO - Scripted Triggers
+#
+# Todos asumen scope de pais. Si el scope puede no ser un pais,
+# protege la llamada con exists = owner en el trigger contenedor.
+#############################################
+
+# DLC Nomads disponible. Todo el scenario depende de el.
+calito_has_nomads = {
+	has_nomads_dlc = yes
+}
+
+# El scenario ya se ejecuto en esta partida.
+calito_five_arks_done = {
+	has_country_flag = calito_five_arks_initialised
+}
+
+# El scenario NO se ha ejecutado todavia, y no esta en cooldown.
+# El cooldown lo pone calito.gatekeeper para que, si el jugador cierra
+# la ventana sin elegir, no se le vuelva a ofrecer cada partida.
+calito_five_arks_available = {
+	NOT = { has_country_flag = calito_five_arks_initialised }
+	NOT = { has_country_flag = calito_five_arks_aborted }
+	NOT = { has_country_flag = calito_five_arks_cooldown }
+	exists = capital_scope
+}
+
+# El pais es nomada y tiene al menos un arco.
+calito_is_ark_fleet_empire = {
+	is_nomadic = yes
+	any_owned_fleet = {
+		is_arkship_fleet = yes
+	}
+}
+
+# La capital es un arco (colonia pc_ark portada por un arkship).
+calito_capital_is_ark = {
+	exists = capital_scope
+	capital_scope = {
+		is_planet_class = pc_ark
+	}
+}
+
+# El pais tiene alguna especie con retrato asari.
+# species_portrait = mec_asari compara contra el portrait_group
+# agregado que define el mod Asari.
+calito_has_asari_species = {
+	any_owned_species = {
+		species_portrait = mec_asari
+	}
+}
+
+# Especies creadas por este mod (marcadas con el flag calito_arkborn).
+calito_has_arkborn_species = {
+	any_owned_species = {
+		has_species_flag = calito_arkborn
+	}
+}
+
+# El pais tiene alguna colonia que NO es un arco.
+# Util para cuando quieras convertir la Tierra en cenizas y quedarte
+# solo con los arks.
+calito_has_non_ark_colony = {
+	any_owned_planet = {
+		is_colony = yes
+		NOT = { is_planet_class = pc_ark }
+	}
+}

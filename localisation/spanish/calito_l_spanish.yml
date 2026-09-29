@@ -1,0 +1,107 @@
+﻿l_spanish:
+ #############################################
+ # CALITO - Localizacion en espanol
+ # Escenario: "5 Arks" (imperio nomada postapocaliptico)
+ #############################################
+
+ # --- Origen ---
+ origin_calito_five_arks_effects:0 "Somos lo que queda. Cinco arcas dejaron la Tierra a tiempo; cinco arcas es todo lo que tenemos. Todo lo que construyamos, lo construiremos dentro de estos cascos, y todo lo que encontremos, tendremos que salir a buscarlo.\n\nNuestro pueblo esta disperso por el vacio en naves que nunca fueron pensadas para ser hogares. estan aprendiendo a vivir en metal. A las estrellas no les importa, y estan muy lejos."
+
+ # --- Eventos de prueba (consola) ---
+ calitotest.1.name:0 "[Dev] Cinco Arcas"
+ calitotest.1.desc:0 "Evento de depuracion: convierte este imperio en una flota nomada de arcas."
+ calitotest.1done.name:0 "Las Arcas Despierdan"
+ calitotest.1done.desc:0 "Escenario ejecutado. Si esta ventana ha aparecido, el evento ha corrido.\n\nComprueba en la esquina superior derecha que el imperio es ahora una §Yflota nomada§! de cinco arcos, con una §Yreina§! al frente y una §Yinvestigadora de 767 anos§! en el consejo.\n\nSi algo falta, mira error.log filtrando por ""calito""."
+ calitotest.2.name:0 "[Dev] Anadir un Arco"
+ calitotest.2.desc:0 "Evento de depuracion: genera un unico arco cientifico."
+ calitotest.3.name:0 "[Dev] Anadir especie asari"
+ calitotest.3.desc:0 "Evento de depuracion: crea la especie asari."
+ calitotest.4.name:0 "[Dev] Anadir especie Arkborn"
+ calitotest.4.desc:0 "Evento de depuracion: crea la especie humana superviviente."
+ calitotest.5.name:0 "[Dev] Spawn original de calito"
+ calitotest.5.desc:0 "Evento de depuracion: el spawn original de calito (Tesia y flota Gigastructural)."
+ calitotest.9.name:0 "[Dev] Deshacer nomada"
+ calitotest.9.desc:0 "Evento de depuracion: devuelve el imperio a un estado asentado y no nomada."
+
+ # --- Especies ---
+ NAME_Calito_Arkborn:0 "Nacidos del Arco"
+ NAME_Calito_Arkborn_plural:0 "Nacidos del Arco"
+ ADJ_Calito_Arkborn:0 "Nacido del Arco"
+
+ NAME_Calito_Asari_Arkborn:0 "Asari Superviviente"
+ NAME_Calito_Asari_Arkborn_plural:0 "Asari Supervivientes"
+ ADJ_Calito_Asari_Arkborn:0 "Asari Nacido del Arco"
+
+ # --- Arcos ---
+ NAME_Calito_Ark_Prime:0 "Genesis"
+ NAME_Calito_Ark_Argent:0 "Argent"
+ NAME_Calito_Ark_Ferrum:0 "Ferrum"
+ NAME_Calito_Ark_Cinis:0 "Cinis"
+ NAME_Calito_Ark_Vigil:0 "Vigil"
+ NAME_Calito_Ark_Test:0 "Arco de Prueba"
+
+ # --- Evento en partida: ventana inicial ---
+ calito.100.name:0 "Los Ultimos Cinco"
+ calito.100.desc:0 "Las transmisiones se cortaron hace once anos. Habiamos supuesto lo peor sobre la Tierra; ahora sabemos que fue el mejor resultado posible.\n\nCinco arcas escaparon de la atmosfera superior antes de que el incendio consumiera la corteza. Cinco. El nuestro es el unico que sigue emitiendo, y la unica razon por la que seguimos vivos es que un metalurgo llamado Osei Vance se nego a lanzar las balsas sin capacidad industrial para construir mas.\n\nTenemos un casco, un reactor y la totalidad del conocimiento acumulado de la civilizacion humana. Las otras cuatro arcas estan apagadas en nuestras cartas. Ahi fuera, si es que sobrevivieron, estan las unicas otras personas que podran entender lo que perdimos.\n\nHemos decidido volar."
+
+ calito.100.a:0 "Somos un pueblo de constructores. Haz de este casco una ciudad."
+ calito.100.a.tt:0 "Convierte este imperio en una flota nomada de arcas.\n\n§YNuestro arco pasa a ser la capital.§!\nSe recuperan las otras cuatro arcas y se pueblan con supervivientes.\nDos especies nuevas se unen: los §YNacidos del Arco§! (humanos) y un grupo de §YAsari§! que ya venia a bordo.\nObtenemos el origen §Y[Cinco Arcas]§!."
+ calito.100.b:0 "Somos un pueblo de soldados. Haz de este casco una fortaleza."
+ calito.100.b.tt:0 "Igual que la opcion civil, pero nuestro arco es un arco §Militar§!: menos supervivientes a bordo, pero construido para la guerra."
+ calito.100.c:0 "Somos un pueblo de eruditos. Haz de este casco un laboratorio."
+ calito.100.c.tt:0 "Igual que la opcion civil, pero nuestro arco es un arco §Cientifico§!: la tripulacion mas pequeña que podemos sostener, y la mejor posibilidad de entender lo ocurrido."
+ calito.100.d:0 "No estamos listos. Cierra el canal."
+ calito.100.d.tt:0 "No hacer nada. El mundo acaba a nuestro alrededor, pero no nos convertimos en lo que habria que ser."
+
+ calito.110.name:0 "Cinco Cascos, Un Pueblo"
+ calito.110.desc:0 "La conversion ha terminado. Lo que era un planeta ahora es una nave; lo que era una nacion ahora es una flota.\n\nSomos el ultimo fragmento coherente de la Tierra, y por primera vez en once anos el futuro es cuestion de ingenieria y no de duelo."
+ calito.110.a:0 "Entonces empecemos a construir."
+ calito.110.a.tt:0 "La flota de arcas queda establecida. Empezaremos a buscar las otras cuatro dentro de seis meses."
+
+ calito.120.name:0 "Voces en una Frecuencia Muerta"
+ calito.120.desc:0 "Los sensores de largo alcance captaron una transmision estructurada desde un pecio que dabiamos dado por perdido: un arco colonia, con su propulsion fria hace mucho, pero su soporte vital aun ciclando con energia residual. Hay vida a bordo. Miles de ellos.\n\nNo son humanos. Sus escaneos biologicos muestran una poblacion enteramente femenina de un violeta arcanico, y su transmision lleva un saludo para el que no tenemos contexto cultural — pero termina, de forma inequivoca, con una peticion de asilo.\n\nNuestros cascos no son grandes. Pero tampoco estan llenos."
+ calito.120.a:0 "Abrid las esclusas. Todos tienen su parte."
+ calito.120.a.tt:0 "Acepta a los asari supervivientes. Se reparten por nuestros arcas como una nueva especie."
+ calito.120.b:0 "No nos sobra nada. Silencia el canal."
+ calito.120.b.tt:0 "Rechazar. El arco asari queda a la deriva."
+
+ # --- Titulos de la monarquia ---
+ RT_CALITO_QUEEN:0 "Regente de las Cinco Arcas"
+ RT_CALITO_KING:0 "Regente de las Cinco Arcas"
+
+ # --- Los dos personajes unicos ---
+ NAME_Calito_Queen:0 "Sela'vhi T'Neyt"
+ calito_queen_desc:0 "Era una nina cuando llegaron las arcas, y desde entonces ha crecido dentro de un mundo de acero mientras los adultos discutian que habia sido la Tierra.\n\nLleva la corona porque nadie mas la lleva, y ya ha aprendido que la diferencia entre una reina y una pasajera es si das ordenes o las pides."
+ calito_queen_phrase:0 "Cinco cascos. Una voz. La mia."
+
+ NAME_Calito_Archivist:0 "Archivera Vethara Il'in"
+ calito_archivist_desc:0 "Ya era adulta cuando la flota partio. Ha sobrevivido a cada tecnologia que su especie construyo, a cada guerra, y al propio mundo, y lo recuerda todo con una claridad que los jovenes encuentran inquietante.\n\nDonde los demas ven cinco naves, ella ve una biblioteca sin indice. Ha leido los restos de la Tierra en sus propios huesos, y no ha terminado."
+ calito_archivist_phrase:0 "Haz una pregunta. Tengo siete siglos de paciencia."
+
+ # --- Rasgo de la investigadora ---
+ calito_leader_trait_ark_of_mnemosine:0 "Arca de Mnemosine"
+ calito_leader_trait_ark_of_mnemosine_desc:0 "§LSu memoria abarca mas historia registrada que el resto de la flota junta. No olvida, y no perdona al universo por lo que exigio.§!\n\n§YVelocidad de investigacion +100%.§! La exploracion de naves cientificas, la investigacion de anomalias y la arqueologia mejoran enormemente. +8 lineas de investigacion simultaneas."
+
+ # --- Rasgo de la reina ---
+ calito_leader_trait_iron_vow:0 "Voto de Hierro"
+ calito_leader_trait_iron_vow_desc:0 "§LJuro sobre los restos de un mundo, y ha cumplido. Su palabra es la unica ley que las arcas reconocen.§!\n\n§Ejercitos +50% de dano, +500 de vida, +20% de moral.§! Naves +30% de cadencia, +50% de dano. +50% de experiencia de comandante. Triple longevidad de lider."
+
+ # --- Modificadores (obligatorio: sin esto, error en error.log) ---
+ calito_kaiser_moon_upkeep_reduction:0 "El Kaiser Moon se mantiene solo: +50% reparacion de casco y armadura."
+ # --- Nombres de origen y cargo (el motor los exige con estos nombres) ---
+ calito_origin_five_arks:0 "Cinco Arcas"
+ calito_origin_five_arks_desc:0 "Somos lo que queda. Cinco arcas dejaron la Tierra a tiempo; cinco arcas es todo lo que tenemos."
+ calito_councilor_ark_research:0 "Archivera del Arco"
+ calito_councilor_ark_research_desc:0 "Un asiento en el consejo para quien guarde la memoria de la flota."
+ # --- Menu de depuracion de calitotest.1 ---
+ calitotest.1.desc.settled:0 "Este imperio todavia esta asentado. Pulsar §YEjecutar escenario completo§! lo convertira en una flota nomada de cinco arcas:\n\n§Y-§! Pasa a imperio nomada con el origen §YCinco Arcas§!\n§Y-§! Instala una monarquia absolutista (Emperatriz)\n§Y-§! Crea dos especies: §YNacidos del Arco§! (humanos) y §YAsari Supervivientes§!\n§Y-§! Convierte tu planeta inicial en el arco capital; la Tierra queda muerta\n§Y-§! Crea 4 arcos satelite, todos subidos a §Ytier 3§! con modulos de late game\n§Y-§! Genera la §YReina§! (19) y la §YArchivera§! (767, investigadora jefe)\n\nNecesita el DLC §YNomads§!."
+ calitotest.1.desc.nomadic:0 "Este imperio §Yya es nomada§!. Reejecutar el escenario es seguro: el reset de abajo deshace la ejecucion anterior, pero §Ylos arcos ya creados NO se borran§! (recarga la partida para una prueba de verdad).\n\n§Y-§! Crea dos especies: §YNacidos del Arco§! y §YAsari Supervivientes§!\n§Y-§! Instala una monarquia absolutista (Emperatriz)\n§Y-§! Crea 4 arcos satelite, todos a §Ytier 3§!\n§Y-§! Genera la §YReina§! (19) y la §YArchivera§! (767, investigadora jefe)\n\nNecesita el DLC §YNomads§!."
+ calitotest.1.run:0 "Ejecutar escenario completo"
+ calitotest.1.run.tt:0 "Convierte este imperio en el escenario nomada de las cinco arcas. §YPuede tardar un momento.§!"
+ calitotest.1.species:0 "Crear solo las dos especies"
+ calitotest.1.species.tt:0 "Crea §YNacidos del Arco§! y §YAsari Supervivientes§! sin tocar nada mas. Util para comprobar la especie y los retratos asari."
+ calitotest.1.gov:0 "Instalar solo la monarquia absolutista"
+ calitotest.1.gov.tt:0 "Cambia este imperio a §Yauth_oligarchic§! (la unica autoridad imperial, la unica con herederos) mas eticas militaristas, que selecciona §Ygov_star_empire§! (Emperador/Emperatriz)."
+ calitotest.1.leaders:0 "Generar solo los dos lideres"
+ calitotest.1.leaders.tt:0 "Crea las especies si hacen falta, y luego genera la §YReina§! (asari, 19, toma el trono) y la §YArchivera§! (asari, 767, inmortal, investigadora jefe). §YNota:§! si la reina no aparece como soberana, el paso §Yset_council_position = councilor_ruler_oligarchic§! es el sospechoso."
+ calitotest.1.cancel:0 "Cerrar sin hacer nada"

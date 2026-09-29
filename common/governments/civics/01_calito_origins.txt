@@ -1,0 +1,67 @@
+#############################################
+# CALITO - Origen "5 Arks"
+#
+# Origen de SCRIPT (no jugable desde el creador de imperios).
+# Se aplica en mitad de partida con:
+#     set_origin = calito_origin_five_arks
+#
+# Motivo de que sea no-jugable: un origen jugable necesita
+# initializers (sistema solar de partida), advanced_start, y su propia
+# pantalla de inicio. Eso solo tiene sentido si el escenario se elige
+# al crear la partida. Este mod arranca elscenario en una partida ya
+# en curso, asi que lo correcto es un origen de script, igual que
+# hace vanilla con origin_nomadic_settled / origin_nomadic_purger
+# (common/governments/civics/01_origins_non_playable.txt).
+#
+# REQUISITOS AL APLICARLO:
+#   - is_nomadic = yes  (lo pone set_country_as_nomad_effect)
+#   - El pais debe tener capital, o transfer_carrier no tiene destino.
+#############################################
+
+calito_origin_five_arks = {
+	is_origin = yes
+
+	# Reutilizamos el icono de los nomadas vanilla: no tenemos arte propio.
+	icon = "gfx/interface/icons/origins/origins_default_nomads.dds"
+
+	playable = {
+		always = no   # Origen de script, no aparece en el creador
+	}
+
+	ai_playable = { always = no }
+
+	# Sin efectos de inicio: la partida ya esta en marcha.
+	flags = { calito_five_arks }
+
+	# Bonificaciones tematicas del escenario:
+	# - investigation de anomalias y arqueologia: es lo que encuentra un
+	#   pueblo que reconstruye desde cero y busca respuestas.
+	# - Sin bonificacion economica: la supervivencia es el handicap.
+	modifier = {
+		ship_anomaly_research_speed_mult = 0.20
+		category_archaeostudies_research_speed_mult = 0.20
+		ship_archaeological_site_clues_add = 2
+		science_ship_survey_speed = 0.20
+
+		# Exponiendo lo que el mundo perdio: anomalias y arqueologia son
+		# la speciality de un pueblo que reconstruye desde cero.
+		ship_anomaly_research_speed_mult = 0.20
+		category_archaeostudies_research_speed_mult = 0.20
+		ship_archaeological_site_clues_add = 2
+		science_ship_survey_speed = 0.20
+
+		# Exploracion del vacio.
+		arkship_action_speed = 0.20
+		category_voidcraft_research_speed_mult = 0.20
+
+		# Colonizar fuera de las fronteras NO se pone aqui: es una game
+		# rule con modificador de scope (common/game_rules/00_rules.txt),
+		# no un modificador de origen. Los nomadas ya la tienen activa.
+	}
+
+	random_weight = {
+		base = 0
+	}
+
+	description = "origin_calito_five_arks_effects"
+}

@@ -1,0 +1,179 @@
+#############################################
+# CALITO - Mejora de arcos a late game
+#
+# Sube un arco de tier 1 a tier 3 y lo llena de modulos y edificios,
+# como si el imperio llevase decades explorando.
+#
+# POR QUE NO USAMOS EL EFECTO VANILLA create_arkship_effect:
+#   Solo crea el arco. No lo sube de tier, no le pone modulos.
+#
+# POR QUE set_starbase_size NO ES TRAMPA:
+#   El efecto no comprueba nada. Se puede llamar en cualquier momento
+#   con cualquier tamano. Pero los tier 2 y 3 tienen
+#   potential_construction = { always = no }, asi que no se pueden
+#   CONSTRUIR: solo existen por set_starbase_size. Aun asi damos las
+#   technologies antes, para que la UI y elDiseñador resuelvan bien.
+#
+# RANURAS (common/starbase_levels/06_arkship_levels.txt):
+#   tier 1: modulos 1 2        | edificios 1 2 3 4
+#   tier 2: modulos 1 2 3 4    | edificios 1..8
+#   tier 3: modulos 1..6 + spinal_mount_1 | edificios 1..8 + lower_1..4
+#
+# OJO: el slot 7 de modulos ES el spinal_mount_1. El indice 7 no es
+# "el septimo modulo", es un ranur de tipo especial.
+#
+# ARMA: cada modulo de arma trae un component_set, y el motor lo
+# resuelve automaticamente al nivel mas alto que hayamos investigado.
+# Por eso damos technologies de armas: no hace falta (ni se puede)
+# elegir el arma concreta.
+#############################################
+
+# Technologies necesarias para que los modulos y edificios sean legales
+# (los 'potential' de cada uno comprueban has_technology).
+calito_give_ark_upgrade_techs = {
+	# Base de arcos
+	give_technology = { tech = tech_arkship_construction   message = no }
+	give_technology = { tech = tech_arkship_tier_2         message = no }
+	give_technology = { tech = tech_arkship_tier_3         message = no }
+	give_technology = { tech = tech_civilian_arkship       message = no }
+	give_technology = { tech = tech_science_arkship         message = no }
+	give_technology = { tech = tech_military_arkship        message = no }
+	give_technology = { tech = tech_planetary_engineering  message = no }
+
+	# Modulos de apoyo
+	give_technology = { tech = tech_space_construction     message = no }
+	give_technology = { tech = tech_housing_2              message = no }
+	give_technology = { tech = tech_sensors_2              message = no }
+
+	# Armas
+	give_technology = { tech = tech_lasers_1               message = no }
+	give_technology = { tech = tech_mass_drivers_1        message = no }
+	give_technology = { tech = tech_missiles_1             message = no }
+	give_technology = { tech = tech_energy_lance_1         message = no }
+	give_technology = { tech = tech_mass_accelerator_1     message = no }
+	give_technology = { tech = tech_flak_batteries_1       message = no }
+	give_technology = { tech = tech_strike_craft_1         message = no }
+
+	# Edificios
+	give_technology = { tech = tech_power_hub_2            message = no }
+	give_technology = { tech = tech_food_processing_2      message = no }
+	give_technology = { tech = tech_alloys_2               message = no }
+	give_technology = { tech = tech_luxuries_2             message = no }
+	give_technology = { tech = tech_effective_bureaucracy  message = no }
+	give_technology = { tech = tech_interstellar_economics message = no }
+	give_technology = { tech = tech_hydroponics            message = no }
+	give_technology = { tech = tech_space_mining_3         message = no }
+	give_technology = { tech = tech_construction_templates message = no }
+	give_technology = { tech = tech_detection_array        message = no }
+	give_technology = { tech = tech_interstellar_fleet_traditions message = no }
+}
+
+# Sube UN arco a tier 3 y lo kitea.
+# SCOPE: colonia (pc_ark) o flota. Se llama desde la colonia del arco.
+# $ARK_TYPE$ = civilian_arkship | science_arkship | military_arkship
+calito_max_out_ark_effect = {
+	starbase = {   # fleet/starbase se eliminaron: el error 'Invalid context switch [fleet] from [country]' venia de que este efecto se llamaba en scope de PAIS. starbase = { } es lo que usa vanilla en initialize_arkship_starbase_effect (nomads_effects.txt:3405), invocado en scope de NAVE.
+		# --- Tamaño ---
+		set_starbase_size = $ARK_TYPE$_tier_3
+
+		# --- Modulos, ranuras 1-6 ---
+		# 1: ingenieria (reparacion + construccion)
+		set_starbase_module = { slot = 1 module = arkship_engineering_bay }
+		# 2: muelle (capacidad naval)
+		set_starbase_module = { slot = 2 module = arkship_docking_bay }
+		# 3: Bahia de lanceros (naves de ataque)
+		set_starbase_module = { slot = 3 module = arkship_hangar_bay }
+		# 4: bateria de energia
+		set_starbase_module = { slot = 4 module = arkship_lance_battery }
+		# 5: defensa cinetica pesada
+		set_starbase_module = { slot = 5 module = arkship_mass_accelerator }
+		# 6: matraque (las de verdad)
+		set_starbase_module = { slot = 6 module = arkship_missile_battery }
+
+		# --- Modulo especial, ranura 7 = spinal_mount_1 ---
+		# El devastador es un ARMA titanic. Lo ponemos solo en arcos
+		# militares; en los demas, el arsenal (permite construir).
+		set_starbase_module = { slot = 7 module = arkship_capital_shipyard }
+
+		# --- Edificios, ranuras 1-12 ---
+		# 1-4: armadura y escudo (cada edificio = 3 componentes)
+		set_starbase_building = { slot = 1  building = arkship_archaeo_armor }
+		set_starbase_building = { slot = 2  building = arkship_archaeo_armor }
+		set_starbase_building = { slot = 3  building = arkship_archaeo_shield }
+		set_starbase_building = { slot = 4  building = arkship_archaeo_shield }
+		# 5-10: la economia de una colonia tardia
+		set_starbase_building = { slot = 5  building = arkship_energy_hub }
+		set_starbase_building = { slot = 6  building = arkship_food_hub }
+		set_starbase_building = { slot = 7  building = arkship_alloys_hub }
+		set_starbase_building = { slot = 8  building = arkship_consumer_goods_hub }
+		set_starbase_building = { slot = 9  building = arkship_bureaucracy_hub }
+		set_starbase_building = { slot = 10 building = arkship_trade_hub }
+		# 11-12: sin limite de instancias, para crecimiento y recurso
+		set_starbase_building = { slot = 11 building = arkship_hydroponics_bay }
+		set_starbase_building = { slot = 12 building = arkship_harvest_processing_arrays }
+	}
+}
+
+# Variante militar: anade el devastador y mas PD.
+# $ARK_TYPE$ = military_arkship (por seguridad)
+calito_max_out_military_ark_effect = {
+	starbase = {   # fleet/starbase se eliminaron: el error 'Invalid context switch [fleet] from [country]' venia de que este efecto se llamaba en scope de PAIS. starbase = { } es lo que usa vanilla en initialize_arkship_starbase_effect (nomads_effects.txt:3405), invocado en scope de NAVE.
+		# El resto de kitting normal
+		set_starbase_size = military_arkship_tier_3
+		set_starbase_module = { slot = 1 module = arkship_engineering_bay }
+		set_starbase_module = { slot = 2 module = arkship_docking_bay }
+		set_starbase_module = { slot = 3 module = arkship_hangar_bay }
+		set_starbase_module = { slot = 4 module = arkship_mass_accelerator }
+		set_starbase_module = { slot = 5 module = arkship_lance_battery }
+		set_starbase_module = { slot = 6 module = arkship_flak_battery }
+		# El devastador: unica arma titanic del juego, y solo cabe
+		# en un arco tier 3. Esta es la mayor diferencia entre un
+		# arco militar y uno civil.
+		set_starbase_module = { slot = 7 module = arkship_spinal_devastator_mount }
+
+		set_starbase_building = { slot = 1  building = arkship_archaeo_armor }
+		set_starbase_building = { slot = 2  building = arkship_archaeo_armor }
+		set_starbase_building = { slot = 3  building = arkship_archaeo_armor }
+		set_starbase_building = { slot = 4  building = arkship_archaeo_armor }
+		set_starbase_building = { slot = 5  building = arkship_archaeo_shield }
+		set_starbase_building = { slot = 6  building = arkship_archaeo_shield }
+		set_starbase_building = { slot = 7  building = arkship_archaeo_shield }
+		set_starbase_building = { slot = 8  building = arkship_archaeo_shield }
+		set_starbase_building = { slot = 9  building = arkship_alloys_hub }
+		set_starbase_building = { slot = 10 building = arkship_energy_hub }
+		set_starbase_building = { slot = 11 building = arkship_fleet_academy }
+		set_starbase_building = { slot = 12 building = arkship_growth_chamber }
+	}
+}
+
+# Variante cientifica: sensores, archivo yabitabilidad.
+calito_max_out_science_ark_effect = {
+	starbase = {   # fleet/starbase se eliminaron: el error 'Invalid context switch [fleet] from [country]' venia de que este efecto se llamaba en scope de PAIS. starbase = { } es lo que usa vanilla en initialize_arkship_starbase_effect (nomads_effects.txt:3405), invocado en scope de NAVE.
+		set_starbase_size = science_arkship_tier_3
+		set_starbase_module = { slot = 1 module = arkship_engineering_bay }
+		set_starbase_module = { slot = 2 module = arkship_docking_bay }
+		set_starbase_module = { slot = 3 module = arkship_sensor_array }
+		set_starbase_module = { slot = 4 module = arkship_habitation_module }
+		set_starbase_module = { slot = 5 module = arkship_mining_array }
+		set_starbase_module = { slot = 6 module = arkship_docking_bay }
+		set_starbase_module = { slot = 7 module = arkship_capital_shipyard }
+
+		set_starbase_building = { slot = 1  building = arkship_archaeo_armor }
+		set_starbase_building = { slot = 2  building = arkship_archaeo_shield }
+		# NO usamos arkship_grand_archive: exige tech_galactic_archivism,
+		# que a su vez exige has_grand_archive_dlc = yes. Sin ese DLC
+		# el modulo no es construible y el motor escupe
+		#   Invalid building 'arkship_grand_archive' for starbase
+		# Asi que el sensorArray hace su trabajo.
+		set_starbase_building = { slot = 3  building = arkship_listening_post }
+		set_starbase_building = { slot = 4  building = arkship_listening_post }
+		set_starbase_building = { slot = 5  building = arkship_bureaucracy_hub }
+		set_starbase_building = { slot = 6  building = arkship_energy_hub }
+		set_starbase_building = { slot = 7  building = arkship_food_hub }
+		set_starbase_building = { slot = 8  building = arkship_detection_array }
+		set_starbase_building = { slot = 9  building = arkship_hydroponics_bay }
+		set_starbase_building = { slot = 10 building = arkship_harvest_processing_arrays }
+		set_starbase_building = { slot = 11 building = arkship_growth_chamber }
+		set_starbase_building = { slot = 12 building = arkship_growth_chamber }
+	}
+}

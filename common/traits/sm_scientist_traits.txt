@@ -1,0 +1,34 @@
+sm_leader_trait_inquisitive_3 = {
+	leader_trait_type = veteran
+	inline_script = {
+		script = trait/icon
+		CLASS = scientist
+		ICON = "GFX_leader_trait_inquisitive"
+		RARITY = veteran
+		COUNCIL = yes
+		TIER = 3
+	}
+	councilor_modifier = {
+		all_technology_research_speed = 100
+		num_tech_alternatives_add = 20
+	}
+	modifier = {
+		ship_archaeological_site_clues_add = 10
+		category_archaeostudies_research_speed_mult = 10
+		category_archaeostudies_draw_chance_mult = 10
+		ship_anomaly_research_speed_mult = 10
+		science_ship_survey_speed = 10
+	}
+	leader_class = { scientist }
+	# ANTES era  leader_potential_add = { is_ai = no }
+	# y el log daba:
+	#   Wrong scope for trigger 'is_ai'
+	# leader_potential_add se evalua en scope de PAIS, no de lider, y
+	# alli el trigger correcto es has_leader_... o species = { }.
+	# Como este rasgo ya no lo elige nadie (ai_weight = 0 y no esta en
+	# ninguna lista de seleccion), se anula el bloque entero.
+	leader_potential_add = {
+		always = no
+	}
+	ai_weight = { weight = 0 }
+}

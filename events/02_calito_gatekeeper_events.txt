@@ -1,0 +1,96 @@
+#############################################
+# CALITO - Gatekeepers del scenario
+#
+# Eventos ocultos que traducen un on_action en la ventana del jugador.
+#
+# !!! DISENO DEL COOLDOWN (corregido) !!!
+# La primera version hacia esto en el gatekeeper:
+#     set_timed_country_flag = { flag = calito_five_arks_cooldown days = 7200 }
+# Es decir, ponia un bloqueo de 20 AÑOS en el instante en que OFRECIA
+# el evento, antes de que el jugador hubiera decidido nada. Peor: el
+# propio gatekeeper exige NOT = { has_country_flag = ...cooldown }, asi
+# que en cuanto se ponia, el escenario ya no se podia volver a ofrecer
+# nunca. El jugador veia en el Situation Log que "calito.100" estaba
+# bloqueado por "No tiene la bandera calito_five_arks_cooldown", que es
+# una condicion que el propio mod habia creado.
+#
+# Ahora: el gatekeeper NO toca flags. Cada opcion de calito.100 pone
+# una bandera TERMINAL (initialised si aceptas, aborted si rechazas),
+# y el cooldown corto (1 ano) solo sirve de red de seguridad por si el
+# jugador cierra la partida sin elegir nada.
+#############################################
+
+namespace = calito
+
+# --- Paso 1: se programa la ventana inicial para dentro de 30 dias ---
+country_event = {
+	id = calito.gatekeeper
+	hide_window = yes
+	is_triggered_only = yes
+
+	trigger = {
+		exists = owner
+		is_country_type = default
+		NOT = { is_ai = yes }
+		calito_five_arks_available = yes
+		calito_has_nomads = yes
+	}
+
+	immediate = {
+		# Red de seguridad, NO un bloqueo de decision. 1 ano, no 20.
+		set_timed_country_flag = {
+			flag = calito_five_arks_cooldown
+			days = 365
+		}
+		country_event = { id = calito.100 days = 30 }
+	}
+}
+
+# --- Paso 2: cada ano, re-ofrecer si el jugador nunca eligio ---
+# Si no hay bandera terminal (ni initialised ni aborted), es que la
+# ventana nunca se vio o se cerro sin decidir. Se vuelve a ofrecer.
+country_event = {
+	id = calito.asari_gate
+	hide_window = yes
+	is_triggered_only = yes
+
+	trigger = {
+		exists = owner
+		is_country_type = default
+		NOT = { is_ai = yes }
+		NOT = { has_country_flag = calito_five_arks_initialised }
+		NOT = { has_country_flag = calito_five_arks_aborted }
+		NOT = { has_country_flag = calito_five_arks_cooldown }
+		calito_has_nomads = yes
+	}
+
+	immediate = {
+		set_timed_country_flag = {
+			flag = calito_five_arks_cooldown
+			days = 365
+		}
+		country_event = { id = calito.100 days = 30 }
+	}
+}
+
+# --- Paso 3: la oferta de asari, un ano despues del setup ---
+country_event = {
+	id = calito.asari_yearly
+	hide_window = yes
+	is_triggered_only = yes
+
+	trigger = {
+		exists = owner
+		is_country_type = default
+		NOT = { is_ai = yes }
+		has_country_flag = calito_five_arks_asari_offer
+		calito_is_ark_fleet_empire = yes
+		NOT = { has_country_flag = calito_five_arks_asari_done }
+		NOT = { has_country_flag = calito_five_arks_asari_declined }
+	}
+
+	immediate = {
+		remove_country_flag = calito_five_arks_cooldown
+		country_event = { id = calito.120 }
+	}
+}

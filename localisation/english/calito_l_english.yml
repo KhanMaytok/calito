@@ -1,0 +1,107 @@
+﻿l_english:
+ #############################################
+ # CALITO - English localisation
+ # Scenario: "5 Arks" (post-apocalyptic nomadic empire)
+ #############################################
+
+ # --- Origin ---
+ origin_calito_five_arks_effects:0 "We are what remains. Five arks left Earth in time; five arks are all we have. Everything we will ever build, we build inside these hulls, and everything we will ever find, we will have to go out and look for.\n\nOur people are scattered across the void in vessels that were never meant to be homes. They are learning to live in metal. The stars do not care, and they are very far away."
+
+ # --- Test / console events ---
+ calitotest.1.name:0 "[Dev] Five Arks"
+ calitotest.1.desc:0 "Debug event: converts this empire into a nomadic ark-fleet."
+ calitotest.1done.name:0 "Arks Awake"
+ calitotest.1done.desc:0 "Scenario executed. If this window appeared, the event ran.\n\nCheck the top right: your empire should now be a §Ynomadic fleet§! of five arks, with a §Yqueen§! at the helm and a §Y767-year-old researcher§! on the council.\n\nIf anything is missing, check error.log filtered by ""calito""."
+ calitotest.2.name:0 "[Dev] Add One Ark"
+ calitotest.2.desc:0 "Debug event: spawns a single science arkship."
+ calitotest.3.name:0 "[Dev] Add Asari Species"
+ calitotest.3.desc:0 "Debug event: creates the Asari species."
+ calitotest.4.name:0 "[Dev] Add Arkborn Species"
+ calitotest.4.desc:0 "Debug event: creates the human survivor species."
+ calitotest.5.name:0 "[Dev] Original Calito Spawn"
+ calitotest.5.desc:0 "Debug event: the original calito spawn (Thessia and Gigastructural fleet)."
+ calitotest.9.name:0 "[Dev] Undo Nomadic"
+ calitotest.9.desc:0 "Debug event: reverts the empire to a settled, non-nomadic state."
+
+ # --- Species ---
+ NAME_Calito_Arkborn:0 "Arkborn"
+ NAME_Calito_Arkborn_plural:0 "Arkborn"
+ ADJ_Calito_Arkborn:0 "Arkborn"
+
+ NAME_Calito_Asari_Arkborn:0 "Asari Survivor"
+ NAME_Calito_Asari_Arkborn_plural:0 "Asari Survivors"
+ ADJ_Calito_Asari_Arkborn:0 "Arkborn Asari"
+
+ # --- Arkships ---
+ NAME_Calito_Ark_Prime:0 "Genesis"
+ NAME_Calito_Ark_Argent:0 "Argent"
+ NAME_Calito_Ark_Ferrum:0 "Ferrum"
+ NAME_Calito_Ark_Cinis:0 "Cinis"
+ NAME_Calito_Ark_Vigil:0 "Vigil"
+ NAME_Calito_Ark_Test:0 "Test Ark"
+
+ # --- In-game event: opening window ---
+ calito.100.name:0 "The Last Five"
+ calito.100.desc:0 "The transmissions stopped eleven years ago. We had assumed the worst about Earth; now we know it was the best possible outcome.\n\nFive arks cleared the upper atmosphere before the firestorm consumed the crust. Five. Ours is the only one still broadcasting, and the only reason any of us are still alive is that a metallurgist named Osei Vance refused to let the lifeboats launch without the industrial capacity to build more.\n\nWe have a hull, a reactor, and the sum total of human civilisation's accumulated knowledge. The other four arks are dark on our charts. Somewhere out there, if they survived at all, they are the only other people who will ever understand what we lost.\n\nWe have chosen to fly."
+
+ calito.100.a:0 "We are a people of builders. Make this hull a city."
+ calito.100.a.tt:0 "Convert this empire into a nomadic ark-fleet.\n\n§YOur ark becomes the capital.§!\nThe other four arks are recovered and crewed with survivors.\nTwo new species join us: the §YArkborn§! (human) and a group of §YAsari§! already in the hull.\nWe gain the §Y[Five Arks]§! origin."
+ calito.100.b:0 "We are a people of soldiers. Make this hull a fortress."
+ calito.100.b.tt:0 "Same as the civilian option, but our ark is a §Ymilitary§! arkship: fewer survivors aboard, but built for war."
+ calito.100.c:0 "We are a people of scholars. Make this hull a laboratory."
+ calito.100.c.tt:0 "Same as the civilian option, but our ark is a §Yscience§! arkship: the smallest crew we can sustain, and the best chance of understanding what happened."
+ calito.100.d:0 "We are not ready. Close the channel."
+ calito.100.d.tt:0 "Do nothing. The world ends around us, but we do not become what we would have to become."
+
+ calito.110.name:0 "Five Hulls, One People"
+ calito.110.desc:0 "The conversion is complete. What was a planet is now a ship; what was a nation is now a fleet.\n\nWe are the last coherent fragment of Earth, and for the first time in eleven years the future is a matter of engineering rather than grief."
+ calito.110.a:0 "Then let us start building."
+ calito.110.a.tt:0 "The ark-fleet is established. We will begin searching for the other four arks in six months' time."
+
+ calito.120.name:0 "Voices on a Dead Frequency"
+ calito.120.desc:0 "Long-range sensors picked up a structured transmission from a wreck we had written off: a colony ark, its drive long cold, but its life-support still cycling on residual power. Life aboard. Thousands of them.\n\nThey are not human. Their biosphere scans show an all-female population of an arcan violet, and their transmission carries a greeting we have no cultural context for — but it ends, unmistakably, with a request for shelter.\n\nOur hulls are not large. But they are not full either."
+ calito.120.a:0 "Open the airlocks. Everyone gets a share."
+ calito.120.a.tt:0 "Accept the Asari survivors. They are distributed across our arks as a new species."
+ calito.120.b:0 "We have nothing spare. Silence the channel."
+ calito.120.b.tt:0 "Refuse. The Asari ark is left to drift."
+
+ # --- Ttitulos de la monarquia ---
+ RT_CALITO_QUEEN:0 "Regent of the Five Arks"
+ RT_CALITO_KING:0 "Regent of the Five Arks"
+
+ # --- Los dos personajes unicos ---
+ NAME_Calito_Queen:0 "Sela'vhi T'Neyt"
+ calito_queen_desc:0 "She was a child when the arks launched, and she has spent the years since then growing up inside a steel world while the adults argued about what Earth had been.\n\nShe wears the crown because no one else will, and she has already learned that the difference between a queen and a passenger is whether you give orders or ask for them."
+ calito_queen_phrase:0 "Five hulls. One voice. Mine."
+
+ NAME_Calito_Archivist:0 "Archivist Vethara Il'in"
+ calito_archivist_desc:0 "She was already an adult when the fleet launched. She has outlived every technology her species ever built, every war, and the world itself, and she remembers all of it in a clarity that the young find unnerving.\n\nWhere the others see five ships, she sees a library with no index. She has read the wreck of Earth in its own bones, and she is not finished."
+ calito_archivist_phrase:0 "Ask a question. I have seven centuries of patience."
+
+ # --- Rasgo de la investigadora ---
+ calito_leader_trait_ark_of_mnemosine:0 "Ark of Mnemosine"
+ calito_leader_trait_ark_of_mnemosine_desc:0 "§LHer span of memory holds more recorded history than the rest of the fleet combined. She does not forget, and she does not forgive the universe for what it required.§!\n\n§YResearch speed +100%.§! Science ship survey, anomaly and archaeostudies research all enormously improved. +8 simultaneous research options."
+
+ # --- Rasgo de la reina ---
+ calito_leader_trait_iron_vow:0 "Iron Vow"
+ calito_leader_trait_iron_vow_desc:0 "§LShe swore an oath to a wreck of a world, and she has kept it. Her word is the only law the arks recognise.§!\n\n§YArmies +50% damage, +500 HP, +20% morale.§! Ships +30% fire rate, +50% weapon damage. Commander experience gain +50%. Tripled leader lifespan."
+
+ # --- Modificadores (obligatorio: sin esto, error en error.log) ---
+ calito_kaiser_moon_upkeep_reduction:0 "The Kaiser Moon sustains itself: +50% hull and armour repair."
+ # --- Nombres de origen y cargo (el motor los exige con estos nombres) ---
+ calito_origin_five_arks:0 "Five Arks"
+ calito_origin_five_arks_desc:0 "We are what remains. Five arks left Earth in time; five arks are all we have."
+ calito_councilor_ark_research:0 "Ark Archivist"
+ calito_councilor_ark_research_desc:0 "A seat on the council for whoever holds the memory of the fleet."
+ # --- Menu de depuracion de calitotest.1 ---
+ calitotest.1.desc.settled:0 "This empire is still settled. Pressing §YRun Full Scenario§! will convert it into a nomadic fleet of five arks:\n\n§Y-§! Becomes a nomadic empire with the §YFive Arks§! origin\n§Y-§! Installs an absolute monarchy (Empress)\n§Y-§! Creates two species: §YArkborn§! (human) and §YAsari Survivors§!\n§Y-§! Turns your homeworld into the capital ark; Earth is left dead\n§Y-§! Creates 4 satellite arks, all upgraded to §Ytier 3§! with late-game modules\n§Y-§! Spawns the §YQueen§! (19) and the §YArchivist§! (767, chief researcher)\n\nRequires the §YNomads§! DLC."
+ calitotest.1.desc.nomadic:0 "This empire is §Yalready nomadic§!. Running the scenario again is safe: the reset below undoes the previous run, but §Yalready-created arks are not deleted§! (reload the save for a truly clean test).\n\n§Y-§! Creates two species: §YArkborn§! (human) and §YAsari Survivors§!\n§Y-§! Installs an absolute monarchy (Empress)\n§Y-§! Creates 4 satellite arks, all upgraded to §Ytier 3§!\n§Y-§! Spawns the §YQueen§! (19) and the §YArchivist§! (767, chief researcher)\n\nRequires the §YNomads§! DLC."
+ calitotest.1.run:0 "Run Full Scenario"
+ calitotest.1.run.tt:0 "Convert this empire into the five-ark nomadic scenario. §YThis may take a moment.§!"
+ calitotest.1.species:0 "Create Only the Two Species"
+ calitotest.1.species.tt:0 "Creates §YArkborn§! and §YAsari Survivors§! without touching anything else. Useful for checking the species and the Asari portraits."
+ calitotest.1.gov:0 "Install Absolute Monarchy Only"
+ calitotest.1.gov.tt:0 "Switches this empire to §Yauth_oligarchic§! (the only imperial authority, the only one with heirs) plus militarist ethics, which selects §Ygov_star_empire§! (Emperor/Empress)."
+ calitotest.1.leaders:0 "Spawn Only the Two Leaders"
+ calitotest.1.leaders.tt:0 "Creates the species if needed, then spawns the §YQueen§! (asari, 19, takes the throne) and the §YArchivist§! (asari, 767, immortal, chief researcher). §YNote:§! if the Queen does not appear as sovereign, the §Yset_council_position = councilor_ruler_oligarchic§! step is the suspect."
+ calitotest.1.cancel:0 "Close Without Doing Anything"

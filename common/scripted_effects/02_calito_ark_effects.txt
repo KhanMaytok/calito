@@ -1,0 +1,268 @@
+#############################################
+# CALITO - Efectos del scenario "5 Arks"
+#
+# ORDEN CRITICO (si lo inviertes, nada aparece):
+#   1. set_country_as_nomad_effect  -> el pais pasa a nomada
+#   2. give_technology (arkships)   -> desbloquea los disenos
+#   3. refresh_auto_generated_ship_designs
+#   4. SOLO AHORA create_ship con random_existing_design
+# Sin el paso 3, random_existing_design = civilian_arkship_tier_1 no
+# encuentra diseno y la nave se crea silenciosamente vacia.
+#
+# create_arkship_effect vanilla (nomads_effects.txt:6925) NO llama a
+# initialize_arkship_starbase_effect, asi que los arcos que crea no
+# tienen modulos ni edificios de estrella. Por eso aqui NO usamos ese
+# efecto: hacemos nuestra propia version, que si los inicializa.
+#############################################
+
+# Crea un arco nuevo, con colonia pc_ark, modulos y poblacion.
+# $ARK_TYPE$   = civilian_arkship / science_arkship / military_arkship
+# $OWNER$      = el pais dueno
+# $LOCATION$   = sistema donde se coloca
+# $DISTANCE$   = distancia a la estrella (0 = pegado a la estrella)
+# $GROUPS$      = numero de GRUPOS de poblacion a crear (NO pops)
+# $SPECIES$    = especie scope de esa poblacion
+# $ARK_NAME$   = clave loc del nombre
+# Kitting (late game). Pasa EXACTAMENTE UNO de estos tres, o ninguno
+# para dejar el arco en su estado basico (tier 1):
+#   IS_MILITARY = yes  -> tier 3 con Devastator
+#   IS_SCIENCE  = yes  -> tier 3 con sensores y archivo
+#   CIVILIAN    = yes  -> tier 3 con economia y comida
+# No se pueden anidar entre si. Requiere haber llamado antes a
+# calito_give_ark_upgrade_techs.
+calito_create_ark_effect = {
+	# Guardamos la especie en un target si viene como scope
+	$SPECIES$ = {
+		save_event_target_as = calito_ark_species
+	}
+
+	create_fleet = {
+		name = $ARK_NAME$
+		settings = {
+			can_change_composition = no
+			can_upgrade = yes
+		}
+		effect = {
+			set_owner = $OWNER$
+			create_ship = {
+				name = $ARK_NAME$
+				random_existing_design = $ARK_TYPE$_tier_1
+				graphical_culture = $ARK_TYPE$
+				upgradable = yes
+				effect = {
+					save_event_target_as = calito_new_ark
+					# Modulos y edificios minimos de la estacion-arca
+					initialize_arkship_starbase_effect = yes
+					# La colonia pc_ark se crea sola (carries_colony),
+					# pero hay que darle contenido.
+					colony = {
+						calito_populate_ark_effect = {
+							GROUPS = $GROUPS$
+							SPECIES = event_target:calito_ark_species
+						}
+					}
+
+					# Kitting opcional de late game.
+					#
+					# !!! ESTE BLOQUE TIENE QUE ESTAR AQUI, EN SCOPE DE
+					# !!! NAVE, NO AL FINAL DEL EFECTO.
+					#
+					# Antes estaba aqui abajo, en scope de PAIS, y ahi
+					# 'fleet = { }' no existe:
+					#   Invalid context switch [fleet] from [...] [country]
+					#   a 04_calito_ark_upgrade_effects.txt:75 y :155
+					# Los efectos de kitting usan ahora 'starbase = { }',
+					# que es lo que hace el propio vanilla en
+					# initialize_arkship_starbase_effect (nomads_effects.txt:3405)
+					# y se invoca justo aqui, en scope de nave.
+					#
+					# !!! LOS PARAMETROS CONDICIONALES NO SE ANIDAN !!!
+					# La sintaxis [[PARAM] ... ] es correcta, pero vanilla NO
+					# anida un [[...]] dentro de otro [[...]] en ningun sitio
+					# de common/scripted_effects. Ademas [[X]] envuelve
+					# EFECTOS, no asignaciones de parametros.
+					# Solucion: un solo nivel, y el llamante pasa EXACTAMENTE
+					# UNO de IS_MILITARY / IS_SCIENCE / CIVILIAN.
+					[[IS_MILITARY]
+						calito_max_out_military_ark_effect = yes
+					]
+					[[IS_SCIENCE]
+						calito_max_out_science_ark_effect = yes
+					]
+					[[CIVILIAN]
+						calito_max_out_ark_effect = {
+							ARK_TYPE = civilian_arkship
+						}
+					]
+					# Si el llamante no pasa ninguno, el arco se queda en
+					# tier 1 con el modulo basico de
+					# initialize_arkship_starbase_effect.
+				}
+			}
+			set_location = {
+				target = $LOCATION$
+				distance = $DISTANCE$
+				angle = random
+			}
+		}
+	}
+
+	# OJO: el kitting de late game ya NO va aqui. Va dentro del
+	# create_ship, en scope de nave, porque 'starbase = { }' solo
+	# resuelve ahi (ver el comentario del bloque [[...]] mas abajo).
+	# Si el llamante no pasa IS_MILITARY / IS_SCIENCE / CIVILIAN, el
+	# arco se queda en tier 1 con el modulo basico de
+	# initialize_arkship_starbase_effect.
+}
+
+# Contenido de una colonia pc_ark recien creada.
+# $GROUPS$   = numero de GRUPOS a crear (tope duro del while)
+# $SPECIES$ = especie
+calito_populate_ark_effect = {
+	# !!! ESTA FUNCION SE CUELGABA EL JUEGO. NO TOCAR EL BUCLE. !!!
+	#
+	# La version anterior era:
+	#     while = {
+	#         limit = { pop_amount < $POPS$ }
+	#         count = 2
+	#         create_pop_group = { species = $SPECIES$ size = @calito_pop_group_size }
+	#     }
+	#
+	# En Stellaris, while = { } tiene DOS formas y son ALTERNATIVAS:
+	#   while = { limit = { COND } ... }  -> repite HASTA que COND sea
+	#                                        falsa. SIN TOPE. Si
+	#                                        create_pop_group no puede
+	#                                        crear la especie,
+	#                                        pop_amount nunca sube,
+	#                                        COND nunca se hace falsa,
+	#                                        y el JUEGO SE CONGELA.
+	#   while = { count = N ... }         -> N iteraciones. TOPE DURO.
+	#
+	# "count = 2" NO protege de nada: significa "repite 2 veces por
+	# vuelta", no "maximo 2". Y vanilla NUNCA combina count y limit en
+	# el mismo while, asi que limit no sirve de red de seguridad.
+	#
+	# REGLA: para poblar, SIEMPRE count. Para condiciones, SIEMPRE limit.
+	# Nunca los dos.
+	if = {
+		limit = {
+			# OJO: el trigger real es 'exists', no un check de clase.
+			#
+			# La version anterior usaba
+			#     OR = {
+			#         $SPECIES$ = { is_species_class = BIOLOGICAL }
+			#         $SPECIES$ = { is_species_class = LITHOID }
+			#     }
+			# y eso NUNCA era cierto, porque BIOLOGICAL es un ARQUETIPO,
+			# no una species_class. Los valores que acepta
+			# is_species_class son las claves de clase: HUM, REP, MAM,
+			# MOL, ART, AVI, FUN, PLANT, TOX, AQUATIC, NECROID,
+			# LITHOID, ROBOT, MACHINE, AI, INF... (asi se usa en vanilla,
+			# p.ej. 00_diplo_greetings.txt con ROBOT).
+			# Nuestras dos especies son class = HUM, asi que la guarda
+			# descartaba TODO y ningun arco recibia poblacion.
+			exists = $SPECIES$
+		}
+
+		# 1) Distritos basicos (ciudad + generadores + uno basic con comida)
+		add_district_and_planet_size_if_needed_effect = { district = district_ark_city }
+		add_district_and_planet_size_if_needed_effect = { district = district_ark_generator }
+		add_district_and_planet_size_if_needed_effect = { district = district_ark_generator }
+		add_district_and_planet_size_if_needed_effect = { district = district_ark_basic }
+		add_zone = {
+			district = district_ark_basic
+			zone = zone_ark_food
+			zone_slot = 0
+			replace = yes
+		}
+
+		# 2) Edificios basicos de colonia arca
+		upgrade_colony_shelter = yes
+
+		# 3) Poblacion. TOPE DURO por iteraciones: no puede colgarse
+		#    aunque la especie falle. GROUPS grupos de
+		#    @calito_pop_group_size cada uno.
+		while = {
+			count = $GROUPS$
+			create_pop_group = {
+				species = $SPECIES$
+				size = @calito_pop_group_size
+			}
+		}
+	}
+	else = {
+		# Explicito en el log, para no fallar en silencio.
+		log_error = "calito_populate_ark_effect: la especie event_target:calito_arkborn_species / calito_asari_species no existe; el arco se queda sin poblar"
+	}
+}
+
+# Convierte el planeta actual en un arco, in situ.
+# Mismo mecanismo que embark_planet_effect de vanilla, pero sin
+# devastation: en nuestro scenario el planeta YA esta muerto.
+# $PLANET$ = planeta a convertir
+# Y luego lo abandonamos.
+calito_convert_planet_to_ark_effect = {
+	$PLANET$ = {
+		save_event_target_as = calito_source_planet
+	}
+
+	create_fleet = {
+		name = "NAME_Calito_Ark_Prime"
+		settings = { can_change_composition = no }
+		effect = {
+			set_owner = prev
+			create_ship = {
+				name = "NAME_Calito_Ark_Prime"
+				# create_colony = no: suprimimos la colonia para poder
+				# meter el planeta dentro con transfer_carrier.
+				create_colony = no
+				graphical_culture = $ARK_TYPE$
+				effect = {
+					save_event_target_as = calito_new_ark
+					initialize_arkship_starbase_effect = yes
+				}
+			}
+			set_location = {
+				target = event_target:calito_source_planet
+				distance = 0
+				angle = random
+			}
+		}
+	}
+
+	# Transferimos el planeta (con su poblacion) dentro del arco.
+	# merge_pops = no: las poblaciones se generan aparte, con la
+	# especie nueva, no con la que hubiera en el planeta.
+	event_target:calito_new_ark = {
+		transfer_carrier = {
+			source = event_target:calito_source_planet
+			target = this
+			transfer_ownership = no
+			merge_pops = no
+			destroy_colony = yes
+		}
+	}
+}
+
+# El planeta de partida: lo dejamos muerto (pc_nuked), sin distritos y
+# sin edificios, para que quede a la vista como vestigio de lo que se
+# perdio. Los humanos supervivientes se van con nosotros al arco.
+calito_kill_homeworld_effect = {
+	$PLANET$ = {
+		change_pc = pc_nuked
+		add_planet_devastation = 100
+		# Nos llevamos a los humanos supervivientes con nosotros.
+		every_owned_pop_group = {
+			limit = { pop_group_size > 0 }
+			resettle_pop_group = {
+				POP_GROUP = this
+				PLANET = event_target:calito_new_ark
+				PERCENTAGE = 100
+			}
+		}
+		# Y luego lo abandonamos.
+		remove_all_districts = yes
+		remove_all_buildings = yes
+		set_planet_flag = calito_dead_earth
+	}
+}

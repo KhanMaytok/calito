@@ -1,0 +1,116 @@
+#############################################
+# CALITO - Rasgos de lider unicos del scenario
+#
+# FORMATO de un rasgo de lider (common/inline_scripts/trait/icon.txt):
+#   CLASS   = scientist | commander | official | governor | general
+#   ICON    = clave GFX_ de un icono EXISTENTE del juego
+#   RARITY  = common | event | free_or_veteran | veteran | paragon
+#   COUNCIL = yes|no
+#   TIER    = 0 (base) | 1 | 2 | 3
+#
+# !!! TRAMPAS DE ESTE FICHERO (las tres costaron una ejecucion) !!!
+#
+# 1) RARITY = legendary NO EXISTE.
+#    El inline script concatena "trait/icon_element/rarity_$RARITY$".
+#    Los ficheros que existen en common/inline_scripts/trait/icon_element/:
+#      rarity_common  rarity_event  rarity_free_or_veteran
+#      rarity_veteran  rarity_paragon
+#    Poner legendary -> "Unknown inline_script" y el rasgo no carga.
+#    Usamos veteran, que es lo que usan 260 rasgos nativos.
+#
+# 2) NO existe "leader_modifier" en un leader trait (0 usos en vanilla).
+#    El key correcto es "modifier" (44 usos). Con leader_modifier sale:
+#      Error: "Unexpected token: leader_modifier"
+#
+# 3) Solo se permite UN bloque councilor_modifier, y un leader trait
+#    no puede tener dos veces el mismo key.
+#
+# !!! LOS SCRIPT VALUES (@) NO FUNCIONAN AQUI !!!
+#   Este fichero lo parsea "persistent.cpp", que NO resuelve
+#   @scripted_variables. Saldria "Malformed token: @...".
+#   Los numeros van en duro.
+#
+# ESCALA CONTRA VANILLA:
+#   leader_trait_maniacal_3     all_technology_research_speed = 0.10
+#   leader_trait_inquisitive_3  all_technology_research_speed = 0.06
+#   ESTE                         all_technology_research_speed = 1.00  (10x)
+#
+# MODIFICADORES: todos verificados. NO existen army_power_mult,
+# naval_power_mult ni planet_physicist_*_produces_add.
+#############################################
+
+# --- La investigadora jefe: 767 anos de memoria acumulada ---
+calito_leader_trait_ark_of_mnemosine = {
+	leader_trait_type = veteran
+
+	inline_script = {
+		script = trait/icon
+		CLASS = scientist
+		ICON = "GFX_leader_trait_inquisitive"
+		RARITY = veteran
+		COUNCIL = yes
+		TIER = 3
+	}
+
+	# modifier = {} (NO leader_modifier) se aplica al lider.
+	# Cuando esta en el consejo se SUMA a esto el councilor_modifier.
+	modifier = {
+		all_technology_research_speed = 1.00
+		science_ship_survey_speed = 1.00
+		ship_anomaly_research_speed_mult = 1.00
+		category_archaeostudies_research_speed_mult = 1.00
+		num_tech_alternatives_add = 8
+	}
+
+	# Solo mientras ocupe el cargo del consejo.
+	councilor_modifier = {
+		all_technology_research_speed = 1.00
+		science_ship_survey_speed = 1.00
+		ship_anomaly_research_speed_mult = 1.00
+		category_archaeostudies_research_speed_mult = 1.00
+		num_tech_alternatives_add = 8
+		councilor_exp_gain = 0.50
+		planet_technician_energy_produces_add = 0.5
+	}
+
+	leader_class = { scientist }
+
+	# Personaje unico del scenario: nunca sale al azar.
+	species_potential_add = { always = no }
+	leader_potential_add = { always = no }
+	ai_weight = { weight = 0 }
+}
+
+# --- La reina: sin ciencia, con mando ---
+calito_leader_trait_iron_vow = {
+	leader_trait_type = veteran
+
+	inline_script = {
+		script = trait/icon
+		CLASS = official
+		ICON = "GFX_leader_trait_adaptable"
+		RARITY = veteran
+		COUNCIL = yes
+		TIER = 3
+	}
+
+	modifier = {
+		army_damage_mult = 0.50
+		army_health = 500
+		army_morale = 0.20
+		ship_fire_rate_mult = 0.30
+		ship_weapon_damage = 0.50
+		commander_exp_gain = 0.50
+	}
+
+	# Solo como Established del consejo: longevidad de la corona.
+	councilor_modifier = {
+		leader_lifespan_mult = 3
+	}
+
+	leader_class = { official commander scientist }
+
+	species_potential_add = { always = no }
+	leader_potential_add = { always = no }
+	ai_weight = { weight = 0 }
+}

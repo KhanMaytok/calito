@@ -1,0 +1,334 @@
+#############################################
+# CALITO - Eventos de prueba (consola)
+#
+# Todos son is_test_event = yes + is_triggered_only = yes, y NO tienen
+# trigger. Asi que NUNCA se disparan solos, pero la consola los acepta
+# siempre. (Un 'trigger = { always = no }' los haria fallar: la consola
+# de depuracion SI evalua el trigger del evento.)
+#
+# Se lanzan a mano desde la consola de depuracion del juego
+# (menu lateral -> "Toggle Debug Menu", o el atajo de consola):
+#
+#     event calitotest.1
+#
+# Ejecutalos sobre el PAIS JUGADOR. Si necesitas atacar otro pais:
+#
+#     event calitotest.1
+#     (selecciona el pais en el mapa antes de lanzar)
+#
+# IDs:
+#   calitotest.1  -> ESCENARIO COMPLETO "5 Arks" (el MVP)
+#   calitotest.2  -> Anadir 1 arco suelto (para probar sin repetir)
+#   calitotest.3  -> Anadir solo la especie asari
+#   calitotest.4  -> Anadir solo la especie humana superviviente
+#   calitotest.5  -> Spawn original de calito (Thessia + flota Giga)
+#   calitotest.9  -> DESHACER: volver a imperio no nomada
+#############################################
+
+namespace = calitotest
+# --- 1. MENU DE DEBUG DEL ESCENARIO ----------------------------------------
+# Ventana con boton. El efecto YA NO se ejecuta al abrir: se ejecuta
+# al pulsar. Asi se ve que el evento llego, y se puede cancelar.
+country_event = {
+	id = calitotest.1
+	title = "calitotest.1.name"
+	picture = GFX_evt_star_white
+	show_sound = event_super_explosion
+	location = root.capital_scope
+
+	is_test_event = yes
+	is_triggered_only = yes
+
+	# SIN trigger: la consola de depuracion SI evalua el trigger del
+	# evento, asi que un 'trigger = { always = no }' haria que
+	# 'event <id>' falle siempre. is_triggered_only = yes ya impide
+	# que se dispare solo.
+	#
+	# desc condicional: dos bloques que se cubren, sin depender del
+	# orden de "gana el primero que cumpla".
+	desc = {
+		text = "calitotest.1.desc.nomadic"
+		trigger = {
+			exists = capital_scope
+			capital_scope = { is_planet_class = pc_ark }
+		}
+	}
+	desc = {
+		text = "calitotest.1.desc.settled"
+		trigger = {
+			NOT = {
+				exists = capital_scope
+				capital_scope = { is_planet_class = pc_ark }
+			}
+		}
+	}
+
+	immediate = {
+		# --- Reset defensivo ---
+		# Si una ejecucion anterior quedo a medias, el imperio puede
+		# seguir marcada como nomada. Lo dejamos en estado limpio.
+		# (Los arcos ya creados NO se borran: recarga la partida.)
+		if = {
+			limit = {
+				OR = {
+					has_country_flag = calito_five_arks_initialised
+					has_country_flag = calito_five_arks_asari_done
+					has_country_flag = calito_five_arks_asari_declined
+				}
+			}
+			set_country_as_nomad_effect = { IS_NOMAD = no }
+			remove_country_flag = calito_five_arks_initialised
+			remove_country_flag = calito_five_arks_asari_done
+			remove_country_flag = calito_five_arks_asari_declined
+			remove_country_flag = calito_five_arks_pending
+			remove_country_flag = calito_five_arks_asari_offer
+			remove_country_flag = calito_five_arks_cooldown
+			remove_country_flag = calito_five_arks_aborted
+			remove_country_flag = calito_absolute_monarchy
+			remove_country_flag = embarked_as_settled_empire
+			remove_country_flag = starting_civilian_arkship
+			remove_country_flag = starting_science_arkship
+			remove_country_flag = starting_military_arkship
+		}
+
+		if = {
+			limit = {
+				NOT = { has_nomads_dlc = yes }
+			}
+			log_error = "calitotest.1: hace falta el DLC Nomads"
+		}
+	}
+
+	# --- Ejecutar el escenario completo ---
+	option = {
+		name = calitotest.1.run
+		custom_tooltip = calitotest.1.run.tt
+		hidden_effect = {
+			calito_five_arks_setup_effect = {
+				ARK_TYPE = civilian_arkship
+			}
+			country_event = { id = calitotest.1done }
+		}
+	}
+
+	# --- Solo las especies (util para depurar la creacion) ---
+	option = {
+		name = calitotest.1.species
+		custom_tooltip = calitotest.1.species.tt
+		hidden_effect = {
+			calito_create_arkborn_species = yes
+			calito_create_asari_species = yes
+		}
+	}
+
+	# --- Solo el gobierno (monarquia absolutista) ---
+	option = {
+		name = calitotest.1.gov
+		custom_tooltip = calitotest.1.gov.tt
+		hidden_effect = {
+			calito_setup_absolute_monarchy_effect = yes
+		}
+	}
+
+	# --- Solo los dos personajes ---
+	option = {
+		name = calitotest.1.leaders
+		custom_tooltip = calitotest.1.leaders.tt
+		hidden_effect = {
+			calito_create_arkborn_species = yes
+			calito_create_asari_species = yes
+			calito_create_queen_effect = yes
+			calito_create_chief_scientist_effect = yes
+		}
+	}
+
+	# --- Cerrar sin hacer nada ---
+	option = {
+		name = calitotest.1.cancel
+		default_hide_option = yes
+	}
+}
+
+country_event = {
+	id = calitotest.1done
+	title = "calitotest.1done.name"
+	desc = "calitotest.1done.desc"
+	picture = GFX_evt_star_white
+	show_sound = event_celebration
+	location = root.capital_scope
+	is_triggered_only = yes
+
+	option = {
+		name = ACKNOWLEDGED
+	}
+}
+
+# --- 2. Anadir un arco suelto ---------------------------------------------
+# Util para probar el efecto de creacion de arcos sin repetir el
+# escenario entero. Crea UN arco mas de tipo ciencia con la especie
+# asari, en el sistema de la capital.
+country_event = {
+	id = calitotest.2
+	title = "calitotest.2.name"
+	desc = "calitotest.2.desc"
+	picture = GFX_evt_star_white
+	show_sound = event_construction
+
+	is_test_event = yes
+	# Ventana = no: este evento solo ejecuta immediate. Sin hide_window
+	# ni option el motor lo RECHAZA al cargar:
+	#   Error: "Event calitotest.X has no options"
+	hide_window = yes
+	# SIN trigger: la consola de depuracion SI evalua el trigger del
+	# evento, asi que un 'trigger = { always = no }' hace que
+	# 'event <id>' falle siempre. Para que el evento nunca se dispare
+	# solo, basta con is_triggered_only = yes (no hay ni trigger
+	# ni ventana que el motor pueda lanzar por su cuenta.)
+	is_triggered_only = yes
+
+	immediate = {
+		# Necesitamos la especie asari; si no existe, la creamos.
+		if = {
+			limit = {
+				NOT = { exists = event_target:calito_asari_species }
+			}
+			calito_create_asari_species = yes
+		}
+		# Si tampoco hay especie arkborn, la reusamos como relleno.
+		if = {
+			limit = {
+				NOT = { exists = event_target:calito_arkborn_species }
+			}
+			calito_create_arkborn_species = yes
+		}
+
+		# Sin esto no hay diseno de nave.
+		give_technology = { tech = tech_science_arkship message = no }
+		refresh_auto_generated_ship_designs = yes
+
+		save_event_target_as = calito_test_country
+		capital_scope = { save_event_target_as = calito_test_system }
+
+		calito_create_ark_effect = {
+			ARK_TYPE = science_arkship
+			OWNER = event_target:calito_test_country
+			LOCATION = event_target:calito_test_system
+			DISTANCE = @calito_satellite_distance
+			GROUPS = @calito_groups_science
+			SPECIES = event_target:calito_asari_species
+			ARK_NAME = "NAME_Calito_Ark_Test"
+		}
+
+		country_event = { id = calitotest.1done }
+	}
+}
+
+# --- 3. Solo la especie asari ---------------------------------------------
+country_event = {
+	id = calitotest.3
+	title = "calitotest.3.name"
+	desc = "calitotest.3.desc"
+	picture = GFX_evt_alien_wildlife
+	show_sound = event_laboratory_sound
+
+	is_test_event = yes
+	# Ventana = no: este evento solo ejecuta immediate. Sin hide_window
+	# ni option el motor lo RECHAZA al cargar:
+	#   Error: "Event calitotest.X has no options"
+	hide_window = yes
+	# SIN trigger: la consola de depuracion SI evalua el trigger del
+	# evento, asi que un 'trigger = { always = no }' hace que
+	# 'event <id>' falle siempre. Para que el evento nunca se dispare
+	# solo, basta con is_triggered_only = yes (no hay ni trigger
+	# ni ventana que el motor pueda lanzar por su cuenta.)
+	is_triggered_only = yes
+
+	immediate = {
+		calito_create_asari_species = yes
+		country_event = { id = calitotest.1done }
+	}
+}
+
+# --- 4. Solo la especie humana superviviente ------------------------------
+country_event = {
+	id = calitotest.4
+	title = "calitotest.4.name"
+	desc = "calitotest.4.desc"
+	picture = GFX_evt_habitat
+	show_sound = event_administrative_work
+
+	is_test_event = yes
+	# Ventana = no: este evento solo ejecuta immediate. Sin hide_window
+	# ni option el motor lo RECHAZA al cargar:
+	#   Error: "Event calitotest.X has no options"
+	hide_window = yes
+	# SIN trigger: la consola de depuracion SI evalua el trigger del
+	# evento, asi que un 'trigger = { always = no }' hace que
+	# 'event <id>' falle siempre. Para que el evento nunca se dispare
+	# solo, basta con is_triggered_only = yes (no hay ni trigger
+	# ni ventana que el motor pueda lanzar por su cuenta.)
+	is_triggered_only = yes
+
+	immediate = {
+		calito_create_arkborn_species = yes
+		country_event = { id = calitotest.1done }
+	}
+}
+
+# --- 5. Spawn original de calito (Thessia / Gigastructural) ---------------
+country_event = {
+	id = calitotest.5
+	title = "calitotest.5.name"
+	desc = "calitotest.5.desc"
+	picture = GFX_evt_alien_wildlife
+	show_sound = event_mystic_reveal
+
+	is_test_event = yes
+	# Ventana = no: este evento solo ejecuta immediate. Sin hide_window
+	# ni option el motor lo RECHAZA al cargar:
+	#   Error: "Event calitotest.X has no options"
+	hide_window = yes
+	# SIN trigger: la consola de depuracion SI evalua el trigger del
+	# evento, asi que un 'trigger = { always = no }' hace que
+	# 'event <id>' falle siempre. Para que el evento nunca se dispare
+	# solo, basta con is_triggered_only = yes (no hay ni trigger
+	# ni ventana que el motor pueda lanzar por su cuenta.)
+	is_triggered_only = yes
+
+	immediate = {
+		calito_spawn = yes
+		country_event = { id = calitotest.1done }
+	}
+}
+
+# --- 9. Deshacer ----------------------------------------------------------
+# Vuelve al estado no nomada. NO borra los arcos ya creados (eso lo
+# haria falta a mano); solo revierte el flag y el origen, para que
+# puedas probar el escenario otra vez sin recargar.
+country_event = {
+	id = calitotest.9
+	title = "calitotest.9.name"
+	desc = "calitotest.9.desc"
+	picture = GFX_evt_news_room
+	show_sound = event_default
+
+	is_test_event = yes
+	# Ventana = no: este evento solo ejecuta immediate. Sin hide_window
+	# ni option el motor lo RECHAZA al cargar:
+	#   Error: "Event calitotest.X has no options"
+	hide_window = yes
+	# SIN trigger: la consola de depuracion SI evalua el trigger del
+	# evento, asi que un 'trigger = { always = no }' hace que
+	# 'event <id>' falle siempre. Para que el evento nunca se dispare
+	# solo, basta con is_triggered_only = yes (no hay ni trigger
+	# ni ventana que el motor pueda lanzar por su cuenta.)
+	is_triggered_only = yes
+
+	immediate = {
+		set_country_as_nomad_effect = { IS_NOMAD = no }
+		set_origin = origin_default
+		remove_country_flag = calito_five_arks_initialised
+		remove_country_flag = embarked_as_settled_empire
+		country_event = { id = calitotest.1done }
+	}
+}
