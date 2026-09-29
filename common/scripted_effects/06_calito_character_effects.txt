@@ -89,28 +89,30 @@ calito_create_queen_effect = {
 			set_skill = 6
 			set_leader_flag = leader_death_events_blocked
 
-			# 3) El trono, DENTRO del effect de create_leader.
-			#
-			# Vanilla hace exactamente esto (origin_events_1.txt:3096):
-			#     create_leader = { class = scientist
-			#                       effect = { set_council_position = ... } }
-			# La version anterior lo hacia despues, con
-			#     event_target:calito_queen = { set_council_position = ... }
-			# Si el event_target no resuelve al lider (sino al pais), el
-			# efecto se evalua en scope de pais y el error sale como
+			# A los 102 anos la mortandad natural de vanilla ya pega: +0.2%/ano,
+			# y a partir de los 96 sube a +2%/ano. Sin esto la Arconte puede
+			# morirse a mitad de partida y perdemos al mejor oficial del
+			# imperio. Mismo motivo que la Archivera.
+			set_immortal = yes
+
+			# !!! NO LE DAMOS EL TRONO, Y NO SE PUEDE !!!!
+			# Se probo set_council_position = councilor_ruler_imperial
+			# (incluso desde dentro del effect de create_leader, que es como
+			# vanilla asigna cargos, origin_events_1.txt:3096) y falla con:
 			#     Can't assign to Council position that doesn't exist in
 			#     government
-			# aunque el cargo exista. Asi que se hace aqui, en el scope
-			# que vanilla da por bueno.
-			#
-			# ADVERTENCIA HONESTA: councilor_ruler_imperial lleva
+			# No es un problema de scope. En 4.5.1 NO existe ningun efecto
+			# para fijar un ruler concreto: no hay set_as_ruler ni
+			# make_ruler. El ruler lo elige el juego a partir del
+			# ruler_council_position de la autoridad, y los DIEZ
+			# councilor_ruler_* de vanilla declaran
 			#     possible = { always = no }
-			# en vanilla, y NO existe ningun efecto de juego que fije un
-			# ruler concreto (no hay set_as_ruler ni make_ruler; el ruler
-			# lo elige el juego a partir del ruler_council_position de la
-			# autoridad). Es posible que esta asignacion siga fallando. Si
-			# es asi, la Reina existe y es tu lider oficial mas fuerte,
-			# pero el trono lo ocupara quien el juego elija. Mira el log.
+			# precisamente para que el jugador no pueda elegirlo a mano.
+			# Se probo tambien con auth_imperial (que es la autoridad
+			# correcta, la unica con has_heir = yes) y el resultado fue el
+			# mismo. Decision del usuario: se descarta y se conserva a la
+			# Arconte como la oficial mas poderosa, que es la que de verdad
+			# gobierna mientras el Regente que elija el juego ocupa el trono.
 		}
 	}
 }
