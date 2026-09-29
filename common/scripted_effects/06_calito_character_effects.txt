@@ -92,31 +92,31 @@ calito_create_queen_effect = {
 			change_leader_portrait = mec_asari_1
 			set_skill = 6
 			set_leader_flag = leader_death_events_blocked
-		}
-	}
 
-	# 3) Le damos el trono.
-	#
-	#    El cargo del trono de auth_oligarchic es councilor_ruler_oligarchic
-	#    (00_authorities.txt:319 -> ruler_council_position).
-	#
-	#    !!! NO es un cargo normal: todos los councilor_ruler_* de vanilla
-	#    declaran 'possible = { always = no }'. Eso los esconde del
-	#    jugador, pero el script si puede asignarlos SI el imperio esta
-	#    de verdad en auth_oligarchic. El fallo real era que el imperio no
-	#    lo estaba (change_government habia fallado en silencio) y salia:
-	#        Can't assign to Council position that doesn't exist in government
-	#    Asi que guardamos el caso y dejamos constancia.
-	if = {
-		limit = {
-			has_authority = auth_oligarchic
-		}
-		event_target:calito_queen = {
+			# 3) El trono, DENTRO del effect de create_leader.
+			#
+			# Vanilla hace exactamente esto (origin_events_1.txt:3096):
+			#     create_leader = { class = scientist
+			#                       effect = { set_council_position = ... } }
+			# La version anterior lo hacia despues, con
+			#     event_target:calito_queen = { set_council_position = ... }
+			# Si el event_target no resuelve al lider (sino al pais), el
+			# efecto se evalua en scope de pais y el error sale como
+			#     Can't assign to Council position that doesn't exist in
+			#     government
+			# aunque el cargo exista. Asi que se hace aqui, en el scope
+			# que vanilla da por bueno.
+			#
+			# ADVERTENCIA HONESTA: councilor_ruler_oligarchic lleva
+			#     possible = { always = no }
+			# en vanilla, y NO existe ningun efecto de juego que fije un
+			# ruler concreto (no hay set_as_ruler ni make_ruler; el ruler
+			# lo elige el juego a partir del ruler_council_position de la
+			# autoridad). Es posible que esta asignacion siga fallando. Si
+			# es asi, la Reina existe y es tu lider oficial mas fuerte,
+			# pero el trono lo ocupara quien el juego elija. Mira el log.
 			set_council_position = councilor_ruler_oligarchic
 		}
-	}
-	else = {
-		log_error = "calito: el imperio NO esta en auth_oligarchic, asi que no existe el cargo councilor_ruler_oligarchic. La Reina se ha creado pero se queda sin trono. Revisa calito_setup_absolute_monarchy_effect."
 	}
 }
 
@@ -152,22 +152,20 @@ calito_create_chief_scientist_effect = {
 			# cuantas décadas de partida.
 			set_immortal = yes
 			set_leader_flag = leader_death_events_blocked
-		}
-	}
 
-	# La asignamos al cargo de research nomada propio de calito.
-	# Necesita 'is_leader_possible = { leader_class = scientist }' en
-	# 01_calito_councilors.txt; sin ese bloque el cargo existe pero
-	# nadie puede ocuparlo.
-	if = {
-		limit = {
-			is_nomadic = yes
-		}
-		event_target:calito_archivist = {
+			# El cargo de research nomada propio de calito, asignado
+			# DENTRO del effect de create_leader, igual que vanilla
+			# (origin_events_1.txt:3096, create_leader + effect +
+			# set_council_position). Antes se hacia despues con
+			# event_target, y si ese target no resuelve al lider el
+			# efecto cae en scope de pais y el error sale como
+			#     Can't assign to Council position that doesn't exist in
+			#     government
+			# El cargo necesita ademas
+			#     is_leader_possible = { leader_class = scientist }
+			# en 01_calito_councilors.txt; sin ese bloque el cargo existe
+			# pero nadie puede ocuparlo.
 			set_council_position = calito_councilor_ark_research
 		}
-	}
-	else = {
-		log_error = "calito: el imperio no es nomada, asi que calito_councilor_ark_research no existe (possible = { is_nomadic = yes }). La Investigadora se queda sin consejo."
 	}
 }

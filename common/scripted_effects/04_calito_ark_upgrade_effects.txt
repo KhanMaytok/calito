@@ -66,6 +66,21 @@ calito_give_ark_upgrade_techs = {
 	give_technology = { tech = tech_construction_templates message = no }
 	give_technology = { tech = tech_detection_array        message = no }
 	give_technology = { tech = tech_interstellar_fleet_traditions message = no }
+
+	# !!! TECHs QUE FALTABAN (3) !!!
+	# set_starbase_building comprueba el bloque 'potential' del edificio, y
+	# estos tres exigian una tech que no teniamos, asi que TODAS sus copias
+	# fallaban con:
+	#     set_starbase_building ... failed: Comprobacion de potencial fallida
+	#
+	#   arkship_archaeo_armor  -> tech_archaeoarmor
+	#   arkship_archaeo_shield -> tech_archaeoshield
+	#   arkship_growth_chamber -> tech_growth_chamber_2
+	#
+	# Estan en 00_ancient_relics_tech.txt y 00_biogenesis_tech.txt.
+	give_technology = { tech = tech_archaeoarmor           message = no }
+	give_technology = { tech = tech_archaeoshield          message = no }
+	give_technology = { tech = tech_growth_chamber_2       message = no }
 }
 
 # Sube UN arco a tier 3 y lo kitea.
@@ -165,15 +180,28 @@ calito_max_out_science_ark_effect = {
 		# el modulo no es construible y el motor escupe
 		#   Invalid building 'arkship_grand_archive' for starbase
 		# Asi que el sensorArray hace su trabajo.
+		#
+		# !!! CUIDADO CON starbase_limit = 1 !!!
+		#   arkship_listening_post tiene starbase_limit = { base = 1 }, o
+		#   sea UNICA: solo se admite UNA instancia. Ponerla en dos ranuras
+		#   daba:
+		#     set_starbase_building ... failed: Este edificio ya existe en
+		#     la estacion
+		#   Lo mismo con arkship_growth_chamber en las ranuras 11 y 12.
+		#   Los edificios con starbase_limit = { base = -1 } (sin limite)
+		#   SI se pueden repetir: archaeo_armor, archaeo_shield,
+		#   hydroponics_bay, harvest_processing_arrays, detection_array.
 		set_starbase_building = { slot = 3  building = arkship_listening_post }
-		set_starbase_building = { slot = 4  building = arkship_listening_post }
+		# ranura 4: uno que SI admite varias instancias
+		set_starbase_building = { slot = 4  building = arkship_detection_array }
 		set_starbase_building = { slot = 5  building = arkship_bureaucracy_hub }
 		set_starbase_building = { slot = 6  building = arkship_energy_hub }
 		set_starbase_building = { slot = 7  building = arkship_food_hub }
-		set_starbase_building = { slot = 8  building = arkship_detection_array }
+		set_starbase_building = { slot = 8  building = arkship_archaeo_shield }
 		set_starbase_building = { slot = 9  building = arkship_hydroponics_bay }
 		set_starbase_building = { slot = 10 building = arkship_harvest_processing_arrays }
 		set_starbase_building = { slot = 11 building = arkship_growth_chamber }
-		set_starbase_building = { slot = 12 building = arkship_growth_chamber }
+		# ranura 12: sin limite de instancias
+		set_starbase_building = { slot = 12 building = arkship_hydroponics_bay }
 	}
 }

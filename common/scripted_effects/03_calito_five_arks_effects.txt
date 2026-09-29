@@ -76,9 +76,14 @@ calito_five_arks_setup_effect = {
 		}
 	}
 
+	# El arco principal es una nave NUEVA creada junto al planeta inicial
+	# (ver calito_convert_planet_to_ark_effect). La Tierra se deja muerta
+	# despues, y su gente se traslada al arco.
 	calito_convert_planet_to_ark_effect = {
-		PLANET = event_target:calito_dead_earth
+		OWNER    = event_target:calito_player
+		LOCATION = event_target:calito_home_system
 		ARK_TYPE = $ARK_TYPE$
+		PLANET   = event_target:calito_dead_earth
 	}
 
 	# Contenido del arco principal

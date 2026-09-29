@@ -196,51 +196,59 @@ calito_populate_ark_effect = {
 	}
 }
 
-# Convierte el planeta actual en un arco, in situ.
-# Mismo mecanismo que embark_planet_effect de vanilla, pero sin
-# devastation: en nuestro scenario el planeta YA esta muerto.
-# $PLANET$ = planeta a convertir
-# Y luego lo abandonamos.
+# Crea el arco principal (el que sera la capital) junto al planeta inicial.
+# $OWNER$    = pais dueno
+# $LOCATION$ = sistema donde se deja
+# $ARK_TYPE$ = civilian_arkship / science_arkship / military_arkship
+# $PLANET$   = planeta inicial que se luego deja muerto
+#
+# !!! NO USAMOS transfer_carrier / embark_planet_effect AQUI !!!
+# La primera version de este efecto creaba la nave con
+#     create_colony = no
+# y luego metia el planeta dentro con transfer_carrier. Fallaba:
+#     invalid design for create_ship effect     (02:214)
+#     set_location: 'calito_source_planet' is invalid   (02:225)
+#     Undefined event target: calito_new_ark   (02:236 y 03:85)
+#porque le faltaba random_existing_design (sin diseno el motor no crea
+#la nave) y porque set_location no acepta un planeta como destino.
+#
+# Ahora es EXACTAMENTE el patron de vanilla (create_arkship_effect,
+# nomads_effects.txt:6924): crear la nave con un diseno tier 1, que ya
+# trae su colonia pc_ark incorporada, y dejar la Tierra muerta aparte
+# con calito_kill_homeworld_effect (que ademas se lleva a su gente al
+# arco, conservando la especie del jugador).
 calito_convert_planet_to_ark_effect = {
-	$PLANET$ = {
-		save_event_target_as = calito_source_planet
-	}
-
 	create_fleet = {
 		name = "NAME_Calito_Ark_Prime"
-		settings = { can_change_composition = no }
+		settings = {
+			can_change_composition = no
+			can_upgrade = yes
+		}
 		effect = {
-			set_owner = prev
+			set_owner = $OWNER$
 			create_ship = {
 				name = "NAME_Calito_Ark_Prime"
-				# create_colony = no: suprimimos la colonia para poder
-				# meter el planeta dentro con transfer_carrier.
-				create_colony = no
+				random_existing_design = $ARK_TYPE$_tier_1
 				graphical_culture = $ARK_TYPE$
+				upgradable = yes
 				effect = {
 					save_event_target_as = calito_new_ark
+					# Modulos y edificios minimos. El kitting de late
+					# game lo hace el llamante, aqui en scope de nave.
 					initialize_arkship_starbase_effect = yes
 				}
 			}
-			set_location = {
-				target = event_target:calito_source_planet
-				distance = 0
-				angle = random
-			}
+			set_location = $LOCATION$
 		}
 	}
 
-	# Transferimos el planeta (con su poblacion) dentro del arco.
-	# merge_pops = no: las poblaciones se generan aparte, con la
-	# especie nueva, no con la que hubiera en el planeta.
-	event_target:calito_new_ark = {
-		transfer_carrier = {
-			source = event_target:calito_source_planet
-			target = this
-			transfer_ownership = no
-			merge_pops = no
-			destroy_colony = yes
+	# Red de seguridad: si la nave no se creo, calito_new_ark no existe y
+	# todo lo de abajo (poblacion, kitting) reventaria en silencio.
+	if = {
+		limit = {
+			NOT = { exists = event_target:calito_new_ark }
 		}
+		log_error = "calito_convert_planet_to_ark_effect: no se pudo crear el arco principal (falta el diseno $ARK_TYPE$_tier_1). Comprueba que calito_give_ark_upgrade_techs y refresh_auto_generated_ship_designs se hayan llamado antes."
 	}
 }
 
