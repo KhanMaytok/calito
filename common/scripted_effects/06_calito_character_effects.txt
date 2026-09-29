@@ -57,7 +57,11 @@ calito_create_queen_effect = {
 		species = event_target:calito_asari_species
 		name = "NAME_Calito_Queen"
 		gender = female
-		set_age = 19
+		# 102, no 19: el rasgo mec_asari_trait_core de la especie impone
+		#   leader_age_min = 100 / leader_age_max = 800
+		# y create_leader respeta ese rango. Con 19 el juego la sube al
+		# minimo. Ver 01_calito_species_effects.txt.
+		set_age = 102
 		skill = 6
 		# event_leader = no (por defecto): puede gobernar de verdad,
 		# mejorar relaciones, etc.

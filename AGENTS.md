@@ -80,8 +80,16 @@ elección se note.
 
 | Personaje | Clase | Edad | Retrato | Cargo | Poder |
 |---|---|---|---|---|---|
-| **Sela'vhi T'Neyt** (reina) | official | **19** | `mec_asari_1` | `councilor_ruler_oligarchic` (el trono) | `calito_leader_trait_iron_vow` — mando |
+| **Sela'vhi T'Neyt** (la Arconte) | official | **102** | `mec_asari_1` | *ninguno: el trono no es asignable* | `calito_leader_trait_iron_vow` — mando |
 | **Archivera Vethara Il'in** | scientist | **767** | `mec_asari_4` | `calito_councilor_ark_research` | `calito_leader_trait_ark_of_mnemosine` — research +100% |
+
+La Arconte **no puede ocupar el trono**: en 4.5.1 no hay ningún efecto para fijar
+un ruler concreto, y los diez `councilor_ruler_*` de vanilla llevan
+`possible = { always = no }`. Se queda como la oficial más poderosa, que es lo
+que de verdad gobierna mientras el Regente que elija el juego ocupa el trono.
+
+Su edad es **102** y no 19 porque el rasgo `mec_asari_trait_core` impone
+`leader_age_min = 100` a la especie.
 
 `@calito_research_buff = 1.00` es **10x** el mejor rasgo nativo
 (`leader_trait_maniacal_3` da 0.10). Bajarlo en `00_calito_values.txt`
@@ -343,27 +351,61 @@ El trigger para comparar retrato es **`species_portrait`**, no `portrait`:
 any_owned_species = { species_portrait = mec_asari }
 ```
 
-### 6.10 No uses NINGUN rasgo del mod Asari
+### 6.10 Rasgos de la especie: los de Tesalia, con una excepcion
 
-Ni `mec_asari_trait_core` (el "Amaranthine"), ni `mec_biotics_trait_biotic`.
-La especie se crea con rasgos **vanilla** y nada mas.
-
-`mec_asari_trait_core` esta descartado porque ademas de forzar todos los sexos
-a hembra e imponer `mec_asari_leader_trait_cycle` a cada lider, se opone a
-`trait_venerable` / `trait_enduring` y no se puede quitar nunca
-(`species_possible_remove = { always = no }`).
-
-`mec_biotics_trait_biotic` esta descartado por un motivo mas grave: arrastra
+Usamos los mismos rasgos que la especie asari de Tesalia
+(`prescripted_countries/mec_asari_prescripted_asr.txt:11-24`):
 
 ```txt
-resources = {
-	category = planet_mec_biotics
-	inline_script = "traits/mec_biotics_resources_augment"
+species = {
+	class = "HUM"   portrait = "mec_asari"   gender = female
+	name_list = mec_asari_names
+	trait = trait_organic
+	trait = mec_asari_trait_core
+	trait = mec_asari_trait_biotic     <-- NO se usa
+	trait = trait_charismatic
+	trait = mec_asari_trait_sophisticated
 }
 ```
 
-Si esa categoria o ese `inline_script` no resuelven, **`create_species` aborta
-entero**: no crea la especie y no aparece ni un pop, sin error visible.
+**La unica excepcion es `mec_asari_trait_biotic`**, descartado por dos motivos:
+
+1. Exige `species_potential_add = { can_add_or_remove_special_traits }`, y ese
+   trigger es `from = { has_mutation_nucleotide_isolation_tradition = yes }`
+   (`05_scripted_triggers_traits.txt:154`), una **tradicion de un DLC de
+   genetica que no tenemos**.
+2. Arrastra `resources = { category = planet_mec_biotics
+   inline_script = "traits/mec_biotics_resources_natural" }`. Si esa categoria o
+   ese `inline_script` no resuelven, **`create_species` aborta entero**: no crea
+   la especie y no aparece ni un pop, sin error visible.
+
+### 6.11 Los rasgos con `species_potential_add` NO van en `traits = { }`
+
+El bloque `traits = { }` de `create_species` **respeta** `species_potential_add`.
+Los dos siguientes declaran `always = no`, asi que hay que anadirlos con
+`change_species_characteristics` (es lo que hace vanilla con `trait_survivor`
+en `origin_post_apocalyptic`, `01_start_of_game_effects.txt:2149`):
+
+- `mec_asari_trait_core`  -> `species_potential_add = { always = no }`
+- `trait_survivor`        -> `species_potential_add = { always = no }`
+
+Solo `trait_organic` y `trait_charismatic` van en el bloque de arriba.
+
+### 6.12 Cuidado: `mec_asari_trait_core` pone `leader_age_min = 100`
+
+Ese rasgo limita a **100-800 anos** los lideres de la especie. La Arconte se
+creaba con `set_age = 19`, y el juego se la subia al minimo. **RESUELTO: ahora
+se crea con `set_age = 102`** y la descripcion dice que tenia veinte anos cuando
+salieron las arcas. Si aun asi se ve raro, quita `mec_asari_trait_core` (y se pierde
+`leader_lifespan_mult = 9`, `+0.10 bonus_pop_growth` y
+`+0.10 species_empire_size_mult`).
+
+Lo que ese rasgo compra: `leader_lifespan_mult = 9`,
+`bonus_pop_growth = +0.10`, `species_empire_size_mult = +0.10`, y fuerza todos
+los sexos a hembra al hacer una modificacion genetica (la especie ya es
+`gender = female`, asi que no se nota). Se opone a `trait_venerable` /
+`trait_enduring` / `trait_fleeting` (no a `trait_survivor`) y no se puede quitar
+nunca.
 
 El retrato **no depende de ningun rasgo**: viene del `portrait_set`
 (`portrait = mec_asari` con `class = HUM`). Los rasgos son solo
@@ -485,7 +527,7 @@ hide_leader effect
 | `appearance` | no existe |
 
 Muerte por edad (`common/defines/00_defines.txt`): 0% hasta los 80 anos,
-+0.2%/ano hasta los 96, +2%/ano a partir de ahi. Por eso la reina (19)
++0.2%/ano hasta los 96, +2%/ano a partir de ahi. Por eso la Arconte (102)
 es inmortal por edad sola, y la investigadora (767) necesita
 `set_immortal = yes` o la mortandad se la come en unas cuantas decadas.
 

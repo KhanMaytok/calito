@@ -7,43 +7,73 @@
 # mod pueda jugar con SU propia especie (humana, machine, o la que sea).
 # El scenario no impone la biologia del imperio, solo el de las arcas.
 #
+# RASGOS: los mismos que usa la especie asari de TESALIA en el DLC
+# (prescripted_countries/mec_asari_prescripted_asr.txt:11-24):
+#
+#     species = {
+#         class  = "HUM"
+#         portrait = "mec_asari"
+#         gender = female
+#         name_list = mec_asari_names
+#         trait = trait_organic
+#         trait = mec_asari_trait_core          <-- el "Amaranthine"
+#         trait = mec_asari_trait_biotic        <-- BIOTICS
+#         trait = trait_charismatic
+#         trait = mec_asari_trait_sophisticated
+#     }
+#
+# De esos 5, usamos 4. NO usamos mec_asari_trait_biotic por dos motivos:
+#   1. Exige 'species_potential_add = { can_add_or_remove_special_traits }',
+#      y ese trigger es
+#          from = { has_mutation_nucleotide_isolation_tradition = yes }
+#      (05_scripted_triggers_traits.txt:154), una TRADICION de un DLC de
+#      genetica que no tenemos. Sin ella el rasgo no se puede anadir.
+#   2. Arrastra resources = { category = planet_mec_biotics
+#                  inline_script = "traits/mec_biotics_resources_natural" }.
+#      Si esa categoria o ese inline_script no resuelven, create_species
+#      ABORTA ENTERO: no crea la especie y no aparece ni un pop.
+#
+# !!! LOS RASGOS CON 'species_potential_add' NO VAN EN 'traits = { }' !!!
+# El bloque traits = { } de create_species RESPETA species_potential_add.
+#   mec_asari_trait_core  -> species_potential_add = { always = no }
+#   trait_survivor        -> species_potential_add = { always = no }
+# Asi que se anaden con change_species_characteristics, que es lo que
+# hace vanilla con trait_survivor en origin_post_apocalyptic
+# (01_start_of_game_effects.txt:2149). Por eso aqui solo trait_organic y
+# trait_charismatic van en el bloque de arriba, y el resto abajo.
+#
+# EFECTOS DE mec_asari_trait_core, para saber lo que se compra:
+#   - leader_lifespan_mult = 9  (lideres viven Muchisimo mas)
+#   - bonus_pop_growth = +0.10 y species_empire_size_mult = +0.10
+#   - leader_age_min = 100  -> los lideres de esta especie se generan
+#     entre 100 y 800 anos. Por eso la Arconte se crea con set_age = 102.
+#     Si el juego le respeta la edad, bien; si la sube al minimo, habra
+#     que subirla a 100+ o quitar este rasgo.
+#   - obliga a todos los sexos a hembra al completar una modificacion
+#     genetica (la especie ya es female, asi que no se nota)
+#   - se opone a trait_venerable / trait_enduring / trait_fleeting
+#     (no a trait_survivor, asi que ese lo podemos mantener)
+#   - no se puede quitar nunca (species_possible_remove = always = no)
+#
 # NOTA sobre portrait (esto es lo que hace que funcione):
 #   El mod Asari (790903721) registra su portrait_group "mec_asari"
 #   contra species_class = HUM, NO contra su clase MECASA:
 #       common/portrait_sets/01_mec_asari_portrait_sets.txt
 #       mec_asari = { species_class = HUM  portraits = { "mec_asari" } }
 #   Asi que creamos class = HUM con portrait = mec_asari, que es
-#   exactamente lo que hace el propio mod Asari en sus paises
-#   prescriptados. Los sprites estan en el DLC:
+#   exactamente lo que hace el propio mod Asari. Los sprites estan en
 #       gfx/portraits/portraits/mec_asari_portraits.txt
 #       gfx/models/portraits/mec_asari/   (189 ficheros)
 #   El trigger para COMPARAR un retrato es species_portrait, no portrait.
 #
-# !!! POR QUE NO USAMOS NINGUN RASGO DEL DLC ASARI !!!
-#   mec_biotics_trait_biotic arrastra
-#       resources = { category = planet_mec_biotics
-#                     inline_script = "traits/mec_biotics_resources_augment" }
-#   Si esa categoria o ese inline_script no resuelven, create_species
-#   ABORTA ENTERO: no crea la especie y no aparece ni un pop. Para tener
-#   pops con el retrato asari NO hace falta ningun rasgo: el retrato
-#   viene del portrait_set, y los rasgos son solo cosmeticos/gameplay.
-#   Asi que usamos solo rasgos vanilla, que nunca pueden fallar.
-#
 # !!! EL DLC ASARI AHORA ES OBLIGATORIO !!!
 #   Sin el, 'mec_asari' no existe como retrato y create_species falla.
-#   Esta declarado en descriptor.mod, asi que el launcher avisa.
-#
-# NOTA sobre trait_survivor:
-#   Tiene species_potential_add = { always = no }, asi que NO puede ir
-#   en el bloque traits = { } de create_species. Hay que anadirlo con
-#   change_species_characteristics, igual que hace vanilla para
-#   origin_post_apocalyptic (01_start_of_game_effects.txt:2149).
 #############################################
 
 # --- La especie asari de a bordo ---
-# Si el pais ya tiene una especie con retrato asari (por ejemplo, porque
-# juega como Asari Republics con el DLC), la reutilizamos en vez de
-# crear una segunda. Asi el mod convive bien con el DLC.
+# Si el pais ya tiene una especie asari (por ejemplo, porque juega como
+# Asari Republics con el DLC), la reutilizamos en vez de crear una
+# segunda. Asi el mod convive bien con el DLC.
 calito_create_asari_species = {
 	if = {
 		limit = {
@@ -64,19 +94,25 @@ calito_create_asari_species = {
 			class = HUM
 			portrait = mec_asari
 			namelist = mec_asari_names
+			# Como en Tesalia: la especie es toda hembra.
+			gender = female
 			can_be_modified = yes
 			traits = {
 				trait = trait_organic
-				trait = trait_adaptive
 				trait = trait_charismatic
-				trait = trait_intelligent
-				trait = trait_very_strong
 			}
 			effect = {
 				set_species_flag = calito_asari_arkborn
+
+				# Rasgos con species_potential_add: van aqui, no arriba.
+				change_species_characteristics = {
+					add_trait = mec_asari_trait_sophisticated
+					add_trait = mec_asari_trait_core
+				}
 				change_species_characteristics = {
 					add_trait = trait_survivor
 				}
+
 				save_event_target_as = calito_asari_species
 			}
 		}
